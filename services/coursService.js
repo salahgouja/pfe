@@ -51,11 +51,7 @@ exports.createFilterObj = (req, res, next) => {
 // @route   GET /api/v1/Cours
 // @access  Public
 exports.getCourses = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
-
-  const courses = await Cours.find(req.filterObj).skip(skip).limit(limit);
+  const courses = await Cours.find(req.filterObj);
 
   res.status(200).json({ results: courses.length, page, data: courses });
 });

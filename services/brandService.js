@@ -8,11 +8,7 @@ const Brand = require("../models/brandModel");
 // @route   GET /api/v1/brands
 // @access  Public
 exports.getBrands = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
-
-  const brands = await Brand.find({}).skip(skip).limit(limit);
+  const brands = await Brand.find({});
   res.status(200).json({ results: brands.length, page, data: brands });
 });
 

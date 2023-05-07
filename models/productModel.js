@@ -7,7 +7,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true, //"  hh  " trim tna7i el espace ki tzid fil base
-
       minlength: [2, "Too short Product name"],
       maxlength: [200, "Too long Product name"],
     },
@@ -22,7 +21,7 @@ const productSchema = new mongoose.Schema(
     },
     quantity: {
       type: Number,
-      required: [true, "Product quantity required"],
+      default: 1,
     },
     sold: {
       type: Number,
@@ -69,18 +68,37 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    etat: {
+      type: String,
+      enum: ["nouveau", "occasion"],
+      default: "nouveau",
+      required: [true, "L' etat du product required"],
+    },
   },
   { timestamps: true }
 );
+const setImageURL = (doc) => {
+  if (doc.imageCover) {
+    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+    doc.imageCover = imageUrl;
+  }
+  if (doc.images) {
+    const imagesList = [];
+    doc.images.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.images = imagesList;
+  }
+};
+// findOne, findAll and update
+productSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+
+// create
+productSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
 
 module.exports = mongoose.model("Product", productSchema);
-
-//exemple for tesst zid el subcategories ki te5dem
-
-// {
-//     "title":"Smart Phone" ,
-//     "description": "acackjchchj",
-//     "quantity":"52" ,
-//     "price":"222",
-//      "category":"6446aabf8e2ba06f8a2e37aa"
-// }

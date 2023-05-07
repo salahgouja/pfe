@@ -6,7 +6,7 @@ const ApiError = require("../utils/apiError");
 // @route   GET /api/superAdmins
 // @access  Private/superAdmin
 const getSuperAdmins = asyncHandler(async (req, res) => {
-  const superAdmins = await superAdmin.find({});
+  const superAdmins = await SuperAdmin.find({});
   res.json(superAdmins);
 });
 
@@ -14,7 +14,7 @@ const getSuperAdmins = asyncHandler(async (req, res) => {
 // @route   GET /api/superAdmins/:id
 // @access  Private/Admin
 const getSuperAdmin = asyncHandler(async (req, res) => {
-  const superAdmin = await superAdmin.findById(req.params.id);
+  const superAdmin = await SuperAdmin.findById(req.params.id);
 
   if (superAdmin) {
     res.json(superAdmin);

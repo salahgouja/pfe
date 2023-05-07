@@ -12,8 +12,15 @@ exports.setConservatoireIdToBody = (req, res, next) => {
 };
 
 exports.createTeacher = (req, res) => {
-  const { name, email, password, phoneNumber, adressteacher, conservatoire } =
-    req.body;
+  const {
+    name,
+    email,
+    password,
+    phoneNumber,
+    adressteacher,
+    conservatoire,
+    role,
+  } = req.body;
 
   const teacher = new Teacher({
     name,
@@ -22,6 +29,7 @@ exports.createTeacher = (req, res) => {
     phoneNumber,
     adressteacher,
     conservatoire,
+    role,
   });
 
   teacher.save().then((teacher) => {

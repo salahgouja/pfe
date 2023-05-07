@@ -16,11 +16,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getUsers).post(createUserValidator, createUser);
-router
-  .route("/:id")
-  .get(getUserValidator, getUser)
-  .put(updateUserValidator, updateUser)
-  .delete(deleteUserValidator, deleteUser);
+router.route("/").get(getUsers).post(createUser);
+router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;

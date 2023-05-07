@@ -1,12 +1,12 @@
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
-const Admin = require("../../models/userModel");
-exports.getAdminValidator = [
-  check("id").isMongoId().withMessage("Invalid Admin id format"),
+const Conservatoire = require("../../models/userModel");
+exports.getConservatoireValidator = [
+  check("id").isMongoId().withMessage("Invalid Conservatoire id format"),
   validatorMiddleware,
 ];
 
-exports.createAdminValidator = [
+exports.createConservatoireValidator = [
   check("name")
     .notEmpty()
     .withMessage("Name required")
@@ -16,8 +16,8 @@ exports.createAdminValidator = [
     .isEmail()
     .withMessage("Invalid email")
     .custom((val) =>
-      Admin.findOne({ email: val }).then((admin) => {
-        if (admin) {
+      Conservatoire.findOne({ email: val }).then((conservatoire) => {
+        if (conservatoire) {
           return Promise.reject(
             new Error("e-mail already exist try to sign in ")
           );
@@ -47,13 +47,13 @@ exports.createAdminValidator = [
 
   check("role")
     .optional()
-    .isIn(["user", "superadmin", "admin", "teacher"])
+    .isIn(["user", "superconservatoire", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];
 
-exports.updateAdminValidator = [
-  check("id").isMongoId().withMessage("Invalid Admin id format"),
+exports.updateConservatoireValidator = [
+  check("id").isMongoId().withMessage("Invalid Conservatoire id format"),
   check("name")
     .optional()
     .notEmpty()
@@ -69,12 +69,12 @@ exports.updateAdminValidator = [
     .withMessage("Too short password"),
   check("role")
     .optional()
-    .isIn(["user", "superadmin", "admin", "teacher"])
+    .isIn(["user", "superconservatoire", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];
 
-exports.deleteAdminValidator = [
-  check("id").isMongoId().withMessage("Invalid Admin id format"),
+exports.deleteConservatoireValidator = [
+  check("id").isMongoId().withMessage("Invalid Conservatoire id format"),
   validatorMiddleware,
 ];

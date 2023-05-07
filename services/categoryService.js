@@ -7,12 +7,12 @@ const Category = require("../models/categoryModel");
 // @route   GET /api/v1/categories
 // @access  Public
 exports.getCategories = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+  // const page = req.query.page * 1 || 1;
+  // const limit = req.query.limit * 1 || 5;
+  // const skip = (page - 1) * limit;
 
-  const categories = await Category.find({}).skip(skip).limit(limit);
-  res.status(200).json({ results: categories.length, page, data: categories });
+  const categories = await Category.find({});
+  res.status(200).json({ results: categories.length, data: categories });
 });
 
 // @desc    Get specific category by id
@@ -32,7 +32,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 // @access  Private
 
 exports.createCategory = asyncHandler(async (req, res) => {
-  const { categoryname, subcategory, image } = req.body;
+  const { categoryname, subcategory, product, image } = req.body;
 
   const categoryExists = await Category.findOne({ categoryname });
   if (categoryExists) {
@@ -42,6 +42,7 @@ exports.createCategory = asyncHandler(async (req, res) => {
   const category = new Category({
     categoryname,
     subcategory,
+    product,
     image,
   });
 

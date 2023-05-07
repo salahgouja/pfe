@@ -73,10 +73,3 @@ exports.deletePlaylist = asyncHandler(async (req, res) => {
   await Playlist.remove({ _id: playlist._id });
   res.status(200).json({ message: "Playlist removed" });
 });
-// module.exports = {
-//   getPlaylists,
-//   getPlaylist,
-//   createPlaylist,
-//   updatePlaylist,
-//   deletePlaylist,
-// };

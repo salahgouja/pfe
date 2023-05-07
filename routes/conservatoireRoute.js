@@ -1,10 +1,10 @@
 const express = require("express");
-// const {
-//   getConservatoireValidator,
-//   createConservatoireValidator,
-//   updateConservatoireValidator,
-//   deleteConservatoireValidator,
-// } = require("../utils/validators/conservatoireValidator");
+const {
+  getConservatoireValidator,
+  createConservatoireValidator,
+  updateConservatoireValidator,
+  deleteConservatoireValidator,
+} = require("../utils/validators/conservatoireValidator");
 
 const {
   getConservatoires,
@@ -16,7 +16,10 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getConservatoires).post(createConservatoire);
+router
+  .route("/")
+  .get(getConservatoireValidator, getConservatoires)
+  .post(createConservatoire);
 router
   .route("/:id")
   .get(getConservatoire)

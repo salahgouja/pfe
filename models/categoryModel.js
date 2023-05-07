@@ -20,6 +20,12 @@ const categorySchema = new mongoose.Schema(
         ref: "SubCategory",
       },
     ],
+    product: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     image: String,
   },
   { timestamps: true }
