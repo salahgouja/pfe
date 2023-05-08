@@ -5,7 +5,6 @@ const playlistSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-
       minlength: [2, "To short  playlist title"],
       maxlength: [32, "To long  playlist title"],
     },
@@ -19,10 +18,18 @@ const playlistSchema = new mongoose.Schema(
         ref: "Cours",
       },
     ],
+
     image: String,
+
     prix: {
       type: Number,
-      required: [true, ""],
+      required: [true, "must add price "],
+    },
+    description: {
+      type: String,
+    },
+    teacherName: {
+      type: String,
     },
   },
   { timestamps: true }

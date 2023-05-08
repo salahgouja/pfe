@@ -17,7 +17,7 @@ exports.getPlaylist = asyncHandler(async (req, res) => {
 });
 
 exports.createPlaylist = asyncHandler(async (req, res) => {
-  const { title, cours, image } = req.body;
+  const { title, cours, image, prix, description, teacherName } = req.body;
 
   const playlistExists = await Playlist.findOne({ title });
   if (playlistExists) {
@@ -31,6 +31,9 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
     slug,
     cours,
     image,
+    prix,
+    description,
+    teacherName,
   });
 
   await playlist.save();
@@ -58,7 +61,15 @@ exports.updatePlaylist = asyncHandler(async (req, res) => {
   if (image) {
     playlist.image = image;
   }
-
+  if (prix) {
+    playlist.prix = prix;
+  }
+  if (description) {
+    playlist.description = description;
+  }
+  if (teacherName) {
+    playlist.teacherName = teacherName;
+  }
   await playlist.save();
 
   res.status(200).json(playlist);
