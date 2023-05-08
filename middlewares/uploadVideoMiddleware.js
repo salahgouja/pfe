@@ -17,7 +17,7 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadSingleVideo = (fieldName) => {
+exports.uploadSingleVideo = (uploads) => {
   const upload = multer({
     storage: multer.memoryStorage(),
     fileFilter: function (req, file, cb) {
@@ -27,7 +27,7 @@ exports.uploadSingleVideo = (fieldName) => {
         cb(new ApiError("Only videos allowed", 400), false);
       }
     },
-  }).single(fieldName);
+  }).single(uploads);
 
   return upload;
 };
