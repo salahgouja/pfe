@@ -23,8 +23,10 @@ const coursSchema = new mongoose.Schema(
     description: { type: String, required: true },
     prix: {
       type: Number,
-      required: true,
     },
+    //     supportdecours{
+    // pdf :not required /video :required ,
+    //     },
   },
   { timestamps: true }
 );

@@ -20,6 +20,10 @@ const playlistSchema = new mongoose.Schema(
       },
     ],
     image: String,
+    prix: {
+      type: Number,
+      required: [true, ""],
+    },
   },
   { timestamps: true }
 );

@@ -1,8 +1,30 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
-const slugify = require("slugify");
 const Category = require("../models/categoryModel");
 
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// Upload single image
+exports.uploadCategoryImage = uploadSingleImage("image");
+
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/categories/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
 // @desc    Get list of categories
 // @route   GET /api/v1/categories
 // @access  Public
@@ -32,13 +54,16 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 // @access  Private
 
 exports.createCategory = asyncHandler(async (req, res) => {
-  const { categoryname, subcategory, product, image } = req.body;
-
+  const { categoryname, subcategory, product } = req.body;
+  let { image } = req.body;
   const categoryExists = await Category.findOne({ categoryname });
   if (categoryExists) {
     throw new ApiError("category with this categoryname already exists", 400);
   }
-
+  // If the request contains a file upload, set the image URL to the file path
+  if (req.file) {
+    image = req.file.path;
+  }
   const category = new Category({
     categoryname,
     subcategory,
