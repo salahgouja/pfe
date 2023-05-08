@@ -24,9 +24,14 @@ const coursSchema = new mongoose.Schema(
     prix: {
       type: Number,
     },
-    //     supportdecours{
-    // pdf :not required /video :required ,
-    //     },
+
+    pdfFiles: {
+      fileUrl: String,
+    },
+
+    videoTutorials: {
+      videoUrl: String,
+    },
   },
   { timestamps: true }
 );

@@ -81,10 +81,12 @@ exports.createCategory = asyncHandler(async (req, res) => {
 exports.updateCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { categoryname } = req.body;
+  const { image } = req.body;
 
   const category = await Category.findOneAndUpdate(
     { _id: id },
-    { categoryname },
+    { categoryname, image },
+
     { new: true }
   );
 

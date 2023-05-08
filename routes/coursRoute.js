@@ -12,11 +12,16 @@ const {
   createCours,
   updateCours,
   deleteCours,
+  uploadCoursVideo,
+  uploadCoursPdf,
 } = require("../services/coursService");
 
 const router = express.Router();
 
-router.route("/").get(getCourses).post(createCoursValidator, createCours);
+router
+  .route("/")
+  .get(getCourses)
+  .post(uploadCoursVideo, uploadCoursPdf, createCoursValidator, createCours);
 router
   .route("/:id")
   .get(getCoursValidator, getCours)

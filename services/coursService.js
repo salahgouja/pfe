@@ -4,6 +4,13 @@ const ApiError = require("../utils/apiError");
 
 const Cours = require("../models/coursModel");
 const Playlist = require("../models/playlistModel");
+
+const { uploadSinglePDF } = require("../middlewares/uploadPdfMiddleware");
+const { uploadSingleVideo } = require("../middlewares/uploadVideoMiddleware");
+
+exports.uploadCoursVideo = uploadSingleVideo("Video");
+exports.uploadCoursPdf = uploadSinglePDF("PDF");
+
 exports.setPlaylistIdToBody = (req, res, next) => {
   // Nested route
   if (!req.body.playlist) req.body.playlist = req.params.playlistId;
@@ -11,13 +18,16 @@ exports.setPlaylistIdToBody = (req, res, next) => {
 };
 
 exports.createCours = (req, res) => {
-  const { title, playlist, description, prix } = req.body;
+  const { title, playlist, description, prix, pdfFiles, videoTutorials } =
+    req.body;
 
   const cours = new Cours({
     title,
     playlist,
     description,
     prix,
+    pdfFiles,
+    videoTutorials,
   });
 
   cours.save().then((cours) => {
@@ -74,11 +84,20 @@ exports.getCours = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateCours = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, playlist, discription, prix } = req.body;
+  const { title, playlist, discription, prix, pdfFiles, videoTutorials } =
+    req.body;
 
   const cours = await Cours.findOneAndUpdate(
     { _id: id },
-    { title, slug: slugify(title), playlist, discription, prix },
+    {
+      title,
+      slug: slugify(title),
+      playlist,
+      discription,
+      prix,
+      pdfFiles,
+      videoTutorials,
+    },
     { new: true }
   );
 
