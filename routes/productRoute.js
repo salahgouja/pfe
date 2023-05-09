@@ -13,6 +13,7 @@ const {
   updateProduct,
   deleteProduct,
   setCategoryIdToBody,
+  uploadProductImages,
 } = require("../services/productService");
 
 const router = express.Router();
@@ -20,7 +21,12 @@ const router = express.Router();
 router
   .route("/")
   .get(getProducts)
-  .post(setCategoryIdToBody, createProductValidator, createProduct);
+  .post(
+    uploadProductImages,
+    setCategoryIdToBody,
+    createProductValidator,
+    createProduct
+  );
 router
   .route("/:id")
   .get(getProductValidator, getProduct)

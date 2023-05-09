@@ -20,8 +20,7 @@ exports.setPlaylistIdToBody = (req, res, next) => {
 };
 
 exports.createCours = (req, res) => {
-  const { title, playlist, description, prix, pdfFiles, videoTutorials } =
-    req.body;
+  const { title, playlist, description, prix, pdfFiles, video } = req.body;
 
   const cours = new Cours({
     title,
@@ -29,7 +28,7 @@ exports.createCours = (req, res) => {
     description,
     prix,
     pdfFiles,
-    videoTutorials,
+    video,
   });
 
   cours.save().then((cours) => {
@@ -67,7 +66,7 @@ exports.getCourses = asyncHandler(async (req, res) => {
   const apiFeatures = new ApiFeatures(Courses.find(), req.query).search();
   //execute query
   const courses = await apiFeatures.mongooseQuery;
-  res.status(200).json(courses);
+  res.status(200).json({ results: courses, data: courses });
 });
 
 // @desc    Get specific Cours by id
@@ -88,8 +87,7 @@ exports.getCours = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateCours = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, playlist, discription, prix, pdfFiles, videoTutorials } =
-    req.body;
+  const { title, playlist, discription, prix, pdfFiles, video } = req.body;
 
   const cours = await Cours.findOneAndUpdate(
     { _id: id },
@@ -100,7 +98,7 @@ exports.updateCours = asyncHandler(async (req, res, next) => {
       discription,
       prix,
       pdfFiles,
-      videoTutorials,
+      video,
     },
     { new: true }
   );

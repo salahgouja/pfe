@@ -32,7 +32,7 @@ const categorySchema = new mongoose.Schema(
 );
 const setImageURL = (doc) => {
   if (doc.image) {
-    const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/categories/${doc.image}`;
     doc.image = imageUrl;
   }
 };

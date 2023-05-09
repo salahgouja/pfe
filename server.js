@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 
 dotenv.config({ path: "config.env" });
-
+const path = require("path");
 const ApiError = require("./utils/apiError");
 const globalError = require("./middlewares/errorMiddleware");
 const dbConnection = require("./config/database");
@@ -31,6 +31,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+app.use("/api/v1/assets", express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

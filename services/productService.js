@@ -18,10 +18,74 @@ exports.uploadProductImages = uploadMixOfImages([
   },
   {
     name: "images",
-    maxCount: 5,
+    maxCount: 6,
   },
 ]);
+// @desc    Create product
+// @route   POST  /api/v1/products
+// @access  Private
+// exports.createProduct = asyncHandler(async (req, res) => {
+//   req.body.slug = slugify(req.body.title);
 
+//   const product = await Product.create(req.body); //send body as object after slug
+//   res.status(201).json({ data: product });
+// });
+
+exports.createProduct = (req, res) => {
+  const {
+    title,
+    description,
+    quantity,
+    price,
+    sold,
+    priceAfterDiscount,
+    imageCover,
+    images,
+    category,
+    subCategory,
+    Brand,
+    ratingsAverage,
+    ratingqte,
+    etat,
+  } = req.body;
+  console.log(images);
+  console.log(imageCover);
+
+  const product = new Product({
+    title,
+    description,
+    quantity,
+    price,
+    sold,
+    priceAfterDiscount,
+    imageCover,
+    images,
+    category,
+    subCategory,
+    Brand,
+    ratingsAverage,
+    ratingqte,
+    etat,
+  });
+
+  product.save().then((product) => {
+    Category.findByIdAndUpdate(
+      req.body.category,
+      { $push: { product: product._id } },
+      { new: true, useFindAndModify: false }
+    )
+      .then(() => {
+        res.status(201).json({
+          message: "product added successfully",
+          data: product,
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Unable to create product" });
+      });
+  });
+};
 exports.resizeProductImages = asyncHandler(async (req, res, next) => {
   // console.log(req.files);
   //1- Image processing for imageCover
@@ -112,69 +176,7 @@ exports.setCategoryIdToBody = (req, res, next) => {
   if (!req.body.category) req.body.category = req.params.categoryId;
   next();
 };
-// @desc    Create product
-// @route   POST  /api/v1/products
-// @access  Private
-// exports.createProduct = asyncHandler(async (req, res) => {
-//   req.body.slug = slugify(req.body.title);
 
-//   const product = await Product.create(req.body); //send body as object after slug
-//   res.status(201).json({ data: product });
-// });
-
-exports.createProduct = (req, res) => {
-  const {
-    title,
-    description,
-    quantity,
-    price,
-    sold,
-    priceAfterDiscount,
-    imageCover,
-    images,
-    category,
-    subCategory,
-    Brand,
-    ratingsAverage,
-    ratingqte,
-    etat,
-  } = req.body;
-
-  const product = new Product({
-    title,
-    description,
-    quantity,
-    price,
-    sold,
-    priceAfterDiscount,
-    imageCover,
-    images,
-    category,
-    subCategory,
-    Brand,
-    ratingsAverage,
-    ratingqte,
-    etat,
-  });
-
-  product.save().then((product) => {
-    Category.findByIdAndUpdate(
-      req.body.category,
-      { $push: { product: product._id } },
-      { new: true, useFindAndModify: false }
-    )
-      .then(() => {
-        res.status(201).json({
-          message: "product added successfully",
-          data: product,
-        });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        res.status(500).json({ error: "Unable to create product" });
-      });
-  });
-};
 // @desc    Update specific product
 // @route   PUT /api/v1/products/:id
 // @access  Private

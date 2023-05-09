@@ -61,9 +61,12 @@ exports.createCategory = asyncHandler(async (req, res) => {
     throw new ApiError("category with this categoryname already exists", 400);
   }
   // If the request contains a file upload, set the image URL to the file path
-  if (req.file) {
-    image = req.file.path;
-  }
+  console.log(req.file);
+  console.log(image);
+  // if (req.file) {
+  //   image = req.file.path;
+  // }
+  console.log(image);
   const category = new Category({
     categoryname,
     subcategory,
