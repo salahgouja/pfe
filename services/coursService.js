@@ -11,7 +11,7 @@ const { uploadSinglePDF } = require("../middlewares/uploadPdfMiddleware");
 const { uploadSingleVideo } = require("../middlewares/uploadVideoMiddleware");
 
 exports.uploadCoursVideo = uploadSingleVideo("Video");
-exports.uploadCoursPdf = uploadSinglePDF("PDF");
+exports.uploadCoursPdf = uploadSinglePDF("Pdf");
 
 exports.setPlaylistIdToBody = (req, res, next) => {
   // Nested route
@@ -20,14 +20,14 @@ exports.setPlaylistIdToBody = (req, res, next) => {
 };
 
 exports.createCours = (req, res) => {
-  const { title, playlist, description, prix, pdfFiles, video } = req.body;
+  const { title, playlist, description, prix, pdf, video } = req.body;
 
   const cours = new Cours({
     title,
     playlist,
     description,
     prix,
-    pdfFiles,
+    pdf,
     video,
   });
 
@@ -87,7 +87,7 @@ exports.getCours = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateCours = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, playlist, discription, prix, pdfFiles, video } = req.body;
+  const { title, playlist, discription, prix, pdf, video } = req.body;
 
   const cours = await Cours.findOneAndUpdate(
     { _id: id },
@@ -97,7 +97,7 @@ exports.updateCours = asyncHandler(async (req, res, next) => {
       playlist,
       discription,
       prix,
-      pdfFiles,
+      pdf,
       video,
     },
     { new: true }

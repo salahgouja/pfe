@@ -15,6 +15,10 @@ exports.createBrandValidator = [
     .isLength({ max: 32 })
     .withMessage("Too long Brand name"),
   validatorMiddleware,
+  check("image")
+    .optional()
+    .isArray()
+    .withMessage("image should be array of string"),
 ];
 
 exports.updateBrandValidator = [

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "too short password"],
       select: true, // select :false exclude password from query results
     },
-
+    image: String,
     phoneNumber: String,
     role: {
       type: String,

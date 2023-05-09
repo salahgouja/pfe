@@ -14,6 +14,10 @@ exports.createCategoryValidator = [
     .withMessage("Too short category categoryname")
     .isLength({ max: 32 })
     .withMessage("Too long category categoryname"),
+  check("image")
+    .optional()
+    .isArray()
+    .withMessage("image should be array of string"),
   validatorMiddleware,
 ];
 

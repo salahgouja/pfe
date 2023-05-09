@@ -18,9 +18,6 @@ const playlistSchema = new mongoose.Schema(
         ref: "Cours",
       },
     ],
-
-    image: String,
-
     prix: {
       type: Number,
       required: [true, "must add price "],
@@ -28,6 +25,8 @@ const playlistSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+
+    image: String,
     teacherName: {
       type: String,
     },
@@ -36,7 +35,7 @@ const playlistSchema = new mongoose.Schema(
 );
 const setImageURL = (doc) => {
   if (doc.image) {
-    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/playlist/${doc.image}`;
+    const imageUrl = `${process.env.BASE_URL}api/v1/assets/playlist/${doc.image}`;
     doc.image = imageUrl;
   }
 };
