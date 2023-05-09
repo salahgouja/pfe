@@ -4,6 +4,8 @@ const ApiError = require("../utils/apiError");
 
 const Cours = require("../models/coursModel");
 const Playlist = require("../models/playlistModel");
+const Courses = require("../models/coursModel");
+const ApiFeatures = require("../utils/apiFeatures");
 
 const { uploadSinglePDF } = require("../middlewares/uploadPdfMiddleware");
 const { uploadSingleVideo } = require("../middlewares/uploadVideoMiddleware");
@@ -61,9 +63,11 @@ exports.createFilterObj = (req, res, next) => {
 // @route   GET /api/v1/Cours
 // @access  Public
 exports.getCourses = asyncHandler(async (req, res) => {
-  const courses = await Cours.find(req.filterObj);
-
-  res.status(200).json({ results: courses.length, page, data: courses });
+  //build query
+  const apiFeatures = new ApiFeatures(Courses.find(), req.query).search();
+  //execute query
+  const courses = await apiFeatures.mongooseQuery;
+  res.status(200).json(courses);
 });
 
 // @desc    Get specific Cours by id
