@@ -2,8 +2,63 @@ const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const Category = require("../models/categoryModel");
-
 const Product = require("../models/productModel");
+
+const ApiFeatures = require("../utils/apiFeatures");
+
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
+const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
+const { default: mongoose } = require("mongoose");
+const { query } = require("express");
+exports.uploadProductImages = uploadMixOfImages([
+  {
+    name: "imageCover",
+    maxCount: 1,
+  },
+  {
+    name: "images",
+    maxCount: 5,
+  },
+]);
+
+exports.resizeProductImages = asyncHandler(async (req, res, next) => {
+  // console.log(req.files);
+  //1- Image processing for imageCover
+  if (req.files.imageCover) {
+    const imageCoverFileName = `product-${uuidv4()}-${Date.now()}-cover.jpeg`;
+
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/products/${imageCoverFileName}`);
+
+    // Save image into our db
+    req.body.imageCover = imageCoverFileName;
+  }
+  //2- Image processing for images
+  if (req.files.images) {
+    req.body.images = [];
+    await Promise.all(
+      req.files.images.map(async (img, index) => {
+        const imageName = `product-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+
+        await sharp(img.buffer)
+          .resize(2000, 1333)
+          .toFormat("jpeg")
+          .jpeg({ quality: 95 })
+          .toFile(`uploads/products/${imageName}`);
+
+        // Save image into our db
+        req.body.images.push(imageName);
+      })
+    );
+
+    next();
+  }
+});
+
 // Nested route
 // GET /api/v1/products/:productId/Cours
 exports.createFilterObj = (req, res, next) => {
@@ -20,8 +75,25 @@ exports.getProducts = asyncHandler(async (req, res) => {
   // const limit = req.query.limit * 1 || 5;
   // const skip = (page - 1) * limit;
 
-  const products = await Product.find(req.filterObj);
-  res.status(200).json({ results: products.length, data: products });
+  // const products = await Product.find(req.filterObj);
+  // res.status(200).json({ results: products.length, data: products });
+
+  //build query
+  const apiFeatures = new ApiFeatures(Product.find(), req.query).search();
+  //execute query
+  const products = await apiFeatures.mongooseQuery;
+  res.status(200).json(products);
+  // //search apiFeatures global function
+  // if (req.query.keyword) {
+  //   const query = {};
+  //   query.$or = [
+  //     { title: { $regex: req.query.keyword, $options: "i" } },
+  //     { description: { $regex: req.query.keyword, $options: "i" } },
+  //   ];
+  //   //$regex appartien ou pas
+  //   //$options:"i"    capital letters are find same guitar or Guitar
+  //   mongooseQuery = mongooseQuery.find(query);
+  // }
 });
 
 // @desc    Get specific product by id
