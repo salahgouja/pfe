@@ -1,4 +1,16 @@
 const express = require("express");
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    console.log(file);
+    cb(null, __dirname);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 const {
   getCoursValidator,
   createCoursValidator,
@@ -23,13 +35,11 @@ const {
 const router = express.Router();
 
 router.route("/").get(getCourses).post(
+  upload.array("files", 3),
   resizeImage,
-  resizeVideo,
   resizePdf,
-  uploadCoursImage,
+  resizeVideo,
 
-  uploadCoursVideo,
-  uploadCoursPdf,
   createCoursValidator,
   createCours
 );

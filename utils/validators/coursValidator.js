@@ -25,14 +25,14 @@ exports.createCoursValidator = [
   //   .optional()
   //   .isArray()
   //   .withMessage("image should be array of string"),
-  check("pdf")
-    .optional()
-    .isArray()
-    .withMessage("pdf should be array of string"),
-  check("video")
-    .optional()
-    .isArray()
-    .withMessage("video should be array of string"),
+  // check("pdf")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("pdf should be array of string"),
+  // check("video")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("video should be array of string"),
 
   check("ratingsAverage")
     .optional()

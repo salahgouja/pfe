@@ -38,7 +38,7 @@ const coursSchema = new mongoose.Schema(
 /----------------------------------------------------------------------------/;
 const setImageURL = (doc) => {
   if (doc.image) {
-    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/cours/${doc.image}`;
+    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/cours/image${doc.image}`;
     doc.image = imageUrl;
   }
 };
@@ -54,7 +54,7 @@ coursSchema.post("save", (doc) => {
 /----------------------------------------------------------------------------/;
 const setVideoURL = (doc) => {
   if (doc.video) {
-    const videoUrl = `${process.env.BASE_URL}api/v1/assets/cours/${doc.video}`;
+    const videoUrl = `${process.env.BASE_URL}api/v1/assets/cours/video${doc.video}`;
     doc.video = videoUrl;
   }
 };
@@ -70,7 +70,7 @@ coursSchema.post("save", (doc) => {
 /----------------------------------------------------------------------------/;
 const setPdfURL = (doc) => {
   if (doc.pdf) {
-    const pdfUrl = `${process.env.BASE_URL}api/v1/assets/cours/${doc.pdf}`;
+    const pdfUrl = `${process.env.BASE_URL}api/v1/assets/cours/pdf${doc.pdf}`;
     doc.pdf = pdfUrl;
   }
 };
