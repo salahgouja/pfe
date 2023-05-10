@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const Category = require("../models/categoryModel");
 
+const ApiFeatures = require("../utils/apiFeatures");
+
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
@@ -29,12 +31,11 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/categories
 // @access  Public
 exports.getCategories = asyncHandler(async (req, res) => {
-  // const page = req.query.page * 1 || 1;
-  // const limit = req.query.limit * 1 || 5;
-  // const skip = (page - 1) * limit;
-
-  const categories = await Category.find({});
-  res.status(200).json({ results: categories.length, data: categories });
+  //build query
+  const apiFeatures = new ApiFeatures(Category.find(), req.query).search();
+  //execute query
+  const categories = await apiFeatures.mongooseQuery;
+  res.status(200).json(categories);
 });
 
 // @desc    Get specific category by id
@@ -63,9 +64,7 @@ exports.createCategory = asyncHandler(async (req, res) => {
   // If the request contains a file upload, set the image URL to the file path
   console.log(req.file);
   console.log(image);
-  // if (req.file) {
-  //   image = req.file.path;
-  // }
+
   console.log(image);
   const category = new Category({
     categoryname,

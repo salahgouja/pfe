@@ -8,19 +8,28 @@ const ApiFeatures = require("../utils/apiFeatures");
 
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
-const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
-const { default: mongoose } = require("mongoose");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+require("mongoose");
 const { query } = require("express");
-exports.uploadProductImages = uploadMixOfImages([
-  {
-    name: "imageCover",
-    maxCount: 1,
-  },
-  {
-    name: "images",
-    maxCount: 6,
-  },
-]);
+
+exports.uploadProductImage = uploadSingleImage("image");
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `product-${uuidv4()}-${Date.now()}.jpeg`;
+
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/products/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
 // @desc    Create product
 // @route   POST  /api/v1/products
 // @access  Private
@@ -30,8 +39,7 @@ exports.uploadProductImages = uploadMixOfImages([
 //   const product = await Product.create(req.body); //send body as object after slug
 //   res.status(201).json({ data: product });
 // });
-
-exports.createProduct = (req, res) => {
+exports.createProduct = asyncHandler(async (req, res) => {
   const {
     title,
     description,
@@ -39,18 +47,20 @@ exports.createProduct = (req, res) => {
     price,
     sold,
     priceAfterDiscount,
-    imageCover,
-    images,
     category,
     subCategory,
     Brand,
+    image,
     ratingsAverage,
     ratingqte,
     etat,
   } = req.body;
-  console.log(images);
-  console.log(imageCover);
 
+  // If the request contains a file upload, set the image URL to the file path
+  console.log(image);
+  // if (req.file) {
+  //   image = req.file.path;
+  // }
   const product = new Product({
     title,
     description,
@@ -58,8 +68,7 @@ exports.createProduct = (req, res) => {
     price,
     sold,
     priceAfterDiscount,
-    imageCover,
-    images,
+    image,
     category,
     subCategory,
     Brand,
@@ -68,7 +77,7 @@ exports.createProduct = (req, res) => {
     etat,
   });
 
-  product.save().then((product) => {
+  await product.save().then((product) => {
     Category.findByIdAndUpdate(
       req.body.category,
       { $push: { product: product._id } },
@@ -85,7 +94,10 @@ exports.createProduct = (req, res) => {
         res.status(500).json({ error: "Unable to create product" });
       });
   });
-};
+
+  res.status(201).json(product);
+});
+
 exports.resizeProductImages = asyncHandler(async (req, res, next) => {
   // console.log(req.files);
   //1- Image processing for imageCover

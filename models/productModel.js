@@ -38,12 +38,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
     },
     colors: [String],
-
-    imageCover: {
-      type: String,
-      //required: [true, "Product imageCover required"],
-    },
-    images: [String],
+    image: String,
 
     category: {
       type: mongoose.Schema.ObjectId,
@@ -78,17 +73,9 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 const setImageURL = (doc) => {
-  if (doc.imageCover) {
-    const imageUrl = `${process.env.BASE_URL}api/v1/assets/products/${doc.imageCover}`;
-    doc.imageCover = imageUrl;
-  }
-  if (doc.images) {
-    const imagesList = [];
-    doc.images.forEach((images) => {
-      const imageUrl = `${process.env.BASE_URL}api/v1/assets/products/${images}`;
-      imagesList.push(imageUrl);
-    });
-    doc.images = imagesList;
+  if (doc.image) {
+    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/products/${doc.image}`;
+    doc.image = imageUrl;
   }
 };
 // findOne, findAll and update
