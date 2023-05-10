@@ -5,10 +5,10 @@ const multerOptions = () => {
   const multerStorage = multer.memoryStorage();
 
   const multerFilter = function (req, file, cb) {
-    if (file.mimetype === "application/pdf") {
+    if (file.mimetype.startsWith("Pdf")) {
       cb(null, true);
     } else {
-      cb(new ApiError("Only PDF files allowed", 400), false);
+      cb(new ApiError("Only Pdfs allowed", 400), false);
     }
   };
 
@@ -17,19 +17,4 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadSinglePDF = (uploads) => {
-  const upload = multer({
-    storage: multer.memoryStorage(),
-    fileFilter: function (req, file, cb) {
-      if (file.mimetype === "application/pdf") {
-        cb(null, true);
-      } else {
-        cb(new ApiError("Only PDF files allowed", 400), false);
-      }
-    },
-  }).single(uploads);
-
-  return upload;
-};
-exports.uploadMixOfVideos = (arrayOfFields) =>
-  multerOptions().fields(arrayOfFields);
+exports.uploadSinglePdf = (fieldName) => multerOptions().single(fieldName);

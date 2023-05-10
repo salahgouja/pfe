@@ -12,20 +12,40 @@ const {
   createCours,
   updateCours,
   deleteCours,
+  uploadCoursImage,
   uploadCoursVideo,
   uploadCoursPdf,
+  resizeImage,
+  resizeVideo,
+  resizePdf,
 } = require("../services/coursService");
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(getCourses)
-  .post(uploadCoursVideo, uploadCoursPdf, createCoursValidator, createCours);
+router.route("/").get(getCourses).post(
+  resizeImage,
+  resizeVideo,
+  resizePdf,
+  uploadCoursImage,
+
+  uploadCoursVideo,
+  uploadCoursPdf,
+  createCoursValidator,
+  createCours
+);
 router
   .route("/:id")
   .get(getCoursValidator, getCours)
-  .put(updateCoursValidator, updateCours)
+  .put(
+    uploadCoursImage,
+    resizeImage,
+    uploadCoursVideo,
+    uploadCoursPdf,
+    resizeVideo,
+    resizePdf,
+    updateCoursValidator,
+    updateCours
+  )
   .delete(deleteCoursValidator, deleteCours);
 
 module.exports = router;

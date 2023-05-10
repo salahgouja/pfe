@@ -1,3 +1,8 @@
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
+const { exec } = require("child_process");
+const path = require("path");
+
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
@@ -6,13 +11,92 @@ const Cours = require("../models/coursModel");
 const Playlist = require("../models/playlistModel");
 const Courses = require("../models/coursModel");
 const ApiFeatures = require("../utils/apiFeatures");
-
-const { uploadSinglePDF } = require("../middlewares/uploadPdfMiddleware");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const { uploadSinglePdf } = require("../middlewares/uploadPdfMiddleware");
 const { uploadSingleVideo } = require("../middlewares/uploadVideoMiddleware");
-
+exports.uploadCoursImage = uploadSingleImage("image");
 exports.uploadCoursVideo = uploadSingleVideo("Video");
-exports.uploadCoursPdf = uploadSinglePDF("Pdf");
+exports.uploadCoursPdf = uploadSinglePdf("Pdf");
 
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
+
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/cours/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
+// Video processing
+exports.resizeVideo = asyncHandler(async (req, res, next) => {
+  const filename = `cours-${uuidv4()}-${Date.now()}.video`;
+
+  if (req.file) {
+    // Save the video filename into our db
+    req.body.video = filename;
+
+    // Define the output path and filename for the resized video
+    const outputPath = `uploads/cours/${filename}`;
+
+    // Resize the video using FFmpeg
+    const resizeCommand = `ffmpeg -i ${req.file.path} -vf scale=640:480 -c:a copy ${outputPath}`;
+    exec(resizeCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error resizing video: ${error.message}`);
+        return next(error);
+      }
+      if (stderr) {
+        console.error(`FFmpeg error: ${stderr}`);
+        return next(new Error("Failed to resize video."));
+      }
+
+      console.log("Video resized successfully.");
+
+      // Cleanup the original video file
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error(`Error deleting original video file: ${err.message}`);
+          return next(err);
+        }
+
+        console.log("Original video file deleted.");
+
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
+// Pdf processing
+
+exports.resizePdf = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new Error("No file provided");
+    }
+
+    const filename = `cours-${uuidv4()}-${Date.now()}.pdf`;
+    await sharp(req.file.buffer)
+      .toFormat("pdf")
+      .toFile(`uploads/cours/${filename}`);
+
+    // Save pdf filename into req.body
+    req.body.pdf = filename;
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 exports.setPlaylistIdToBody = (req, res, next) => {
   // Nested route
   if (!req.body.playlist) req.body.playlist = req.params.playlistId;
@@ -20,13 +104,14 @@ exports.setPlaylistIdToBody = (req, res, next) => {
 };
 
 exports.createCours = (req, res) => {
-  const { title, playlist, description, prix, pdf, video } = req.body;
+  const { title, playlist, description, prix, image, pdf, video } = req.body;
 
   const cours = new Cours({
     title,
     playlist,
     description,
     prix,
+    image,
     pdf,
     video,
   });
@@ -53,7 +138,7 @@ exports.createCours = (req, res) => {
 // GET /api/v1/playlists/:playlistId/Cours
 exports.createFilterObj = (req, res, next) => {
   let filterObject = {};
-  if (req.params.playlistId) filterObject = { playlist: req.params.categoryId };
+  if (req.params.playlistId) filterObject = { playlist: req.params.CoursId };
   req.filterObj = filterObject;
   next();
 };

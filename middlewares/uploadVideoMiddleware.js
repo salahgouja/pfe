@@ -5,10 +5,10 @@ const multerOptions = () => {
   const multerStorage = multer.memoryStorage();
 
   const multerFilter = function (req, file, cb) {
-    if (file.mimetype.startsWith("video")) {
+    if (file.mimetype.startsWith("Video")) {
       cb(null, true);
     } else {
-      cb(new ApiError("Only videos allowed", 400), false);
+      cb(new ApiError("Only Videos allowed", 400), false);
     }
   };
 
@@ -17,19 +17,4 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadSingleVideo = (uploads) => {
-  const upload = multer({
-    storage: multer.memoryStorage(),
-    fileFilter: function (req, file, cb) {
-      if (file.mimetype.startsWith("video")) {
-        cb(null, true);
-      } else {
-        cb(new ApiError("Only videos allowed", 400), false);
-      }
-    },
-  }).single(uploads);
-
-  return upload;
-};
-exports.uploadMixOfVideos = (arrayOfFields) =>
-  multerOptions().fields(arrayOfFields);
+exports.uploadSingleVideo = (fieldName) => multerOptions().single(fieldName);

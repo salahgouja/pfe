@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+
 dotenv.config({ path: "config.env" });
 const path = require("path");
 const ApiError = require("./utils/apiError");
@@ -32,6 +34,12 @@ const app = express();
 // Middlewares
 
 app.use(cors());
+// Parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Parse JSON bodies
+app.use(bodyParser.json());
+
 app.use(express.json());
 app.use("/api/v1/assets", express.static(path.join(__dirname, "uploads")));
 

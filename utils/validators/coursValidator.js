@@ -21,10 +21,10 @@ exports.createCoursValidator = [
     .withMessage("Cours price is required")
     .isNumeric()
     .withMessage("Cours price must be a number"),
-  check("image")
-    .optional()
-    .isArray()
-    .withMessage("image should be array of string"),
+  // check("image")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("image should be array of string"),
   check("pdf")
     .optional()
     .isArray()
