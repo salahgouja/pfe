@@ -53,35 +53,19 @@ userSchema.pre("save", async function (next) {
     return next(error);
   }
 });
+const setImageURL = (doc) => {
+  if (doc.image) {
+    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/users/${doc.image}`;
+    doc.image = imageUrl;
+  }
+};
+// findOne, findAll and update
+userSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
-
-// const superadminModel = new mongoose.Schema({});
-// const SuperAdmin = userSchema.discriminator("SuperAdmin", superadminModel);
-
-// const conservatoireModel = new mongoose.Schema({
-//   addressconservatoire: {
-//     type: String,
-//   },
-// });
-// const Conservatoire = userSchema.discriminator(
-//   "Conservatoire",
-//   conservatoireModel
-// );
-
-// const NormalUserModel = new mongoose.Schema({
-//   address: {
-//     type: String,
-//   },
-// });
-// const NormalUser = userSchema.discriminator("NormalUser", NormalUserModel);
-
-// const teacherModel = new mongoose.Schema({
-//   specialite: {
-//     type: String,
-//   },
-// });
-// const Teacher = userSchema.discriminator("teacher", teacherModel);
-
-// module.exports = { SuperAdmin, Conservatoire, NormalUser, Teacher };
+// create
+userSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
+module.exports = mongoose.model("User", userSchema);

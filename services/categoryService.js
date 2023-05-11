@@ -64,8 +64,6 @@ exports.createCategory = asyncHandler(async (req, res) => {
   // If the request contains a file upload, set the image URL to the file path
   console.log(req.file);
   console.log(image);
-
-  console.log(image);
   const category = new Category({
     categoryname,
     subcategory,

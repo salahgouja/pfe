@@ -2,7 +2,29 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const { validationResult } = require("express-validator");
 const ApiError = require("../utils/apiError");
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// Upload single image
+exports.uploadUserImage = uploadSingleImage("image");
 
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `user-${uuidv4()}-${Date.now()}.jpeg`;
+
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/users/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
 // @desc    Get all users
 // @route   GET /api/users
 // @access  Private/user
@@ -31,6 +53,7 @@ exports.getUser = asyncHandler(async (req, res) => {
 exports.createUser = asyncHandler(async (req, res) => {
   const { name, email, password, passwordConfirm, phoneNumber, role } =
     req.body;
+  let { image } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -50,6 +73,7 @@ exports.createUser = asyncHandler(async (req, res) => {
     password,
     passwordConfirm,
     phoneNumber,
+    image,
     role,
   });
 
@@ -61,6 +85,7 @@ exports.createUser = asyncHandler(async (req, res) => {
       password: user.password,
       passwordConfirm: user.passwordConfirm,
       phoneNumber: user.phoneNumber,
+      image: user.image,
       role: user.role,
     });
   } else {
@@ -79,6 +104,8 @@ exports.updateUser = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    user.image = req.body.image || user.image;
+
     user.role = req.body.role || user.role;
 
     const updatedUser = await user.save();
@@ -88,6 +115,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       phoneNumber: updatedUser.phoneNumber,
+      image: updatedUser.image,
       role: updatedUser.role,
     });
   } else {

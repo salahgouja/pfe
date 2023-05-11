@@ -3,13 +3,13 @@ const multer = require("multer");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log(file);
-    cb(null, __dirname);
+    cb(null, "uploads/cours");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + file.originalname);
   },
 });
-
+require("../");
 const upload = multer({ storage: storage });
 const {
   getCoursValidator,
