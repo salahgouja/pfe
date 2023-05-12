@@ -1,6 +1,7 @@
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
+const mongoose = require("mongoose");
 
 const Teacher = require("../models/teacherModel");
 const Conservatoire = require("../models/conservatoireModel");
@@ -21,7 +22,10 @@ exports.createTeacher = (req, res) => {
     conservatoire,
     role,
   } = req.body;
-
+  // Check if the conservatoire value is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(conservatoire)) {
+    return res.status(400).json({ error: "Invalid conservatoire ID" });
+  }
   const teacher = new Teacher({
     name,
     email,
@@ -60,20 +64,15 @@ exports.createFilterObj = (req, res, next) => {
   next();
 };
 
-// @desc    Get list of teacher
-// @route   GET /api/v1/teacher
+// @desc    Get list of teachers
+// @route   GET /api/v1/user/teacher
 // @access  Public
 exports.getTeachers = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
-
-  const teachers = await Cours.find(req.filterObj).skip(skip).limit(limit);
-
-  res.status(200).json({ results: teachers.length, page, data: teachers });
+  const teachers = await Teacher.find({});
+  res.status(200).json({ data: teachers });
 });
 
-// @desc    Get specific Cours by id
+// @desc    Get specific teachers by id
 // @route   GET /api/v1/teacher/:id
 // @access  Public
 exports.getTeacher = asyncHandler(async (req, res, next) => {

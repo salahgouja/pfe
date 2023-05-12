@@ -47,10 +47,8 @@ router
   .route("/:id")
   .get(getCoursValidator, getCours)
   .put(
-    uploadCoursImage,
+    upload.array("files", 3),
     resizeImage,
-    uploadCoursVideo,
-    uploadCoursPdf,
     resizeVideo,
     resizePdf,
     updateCoursValidator,

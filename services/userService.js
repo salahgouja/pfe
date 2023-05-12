@@ -30,7 +30,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @access  Private/user
 exports.getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
-  res.json(users);
+  res.status(200).json({ data: users });
 });
 
 // @desc    Get user by ID
@@ -105,7 +105,6 @@ exports.updateUser = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
     user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
     user.image = req.body.image || user.image;
-
     user.role = req.body.role || user.role;
 
     const updatedUser = await user.save();

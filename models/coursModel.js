@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const multer = require("multer");
 
 const coursSchema = new mongoose.Schema(
   {
@@ -16,6 +17,7 @@ const coursSchema = new mongoose.Schema(
     playlist: {
       type: mongoose.Schema.ObjectId,
       ref: "Playlist",
+      required: true,
     },
 
     description: { type: String, required: true },

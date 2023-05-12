@@ -57,7 +57,6 @@ exports.createProduct = asyncHandler(async (req, res) => {
   } = req.body;
 
   // If the request contains a file upload, set the image URL to the file path
-  console.log(image);
   // if (req.file) {
   //   image = req.file.path;
   // }
@@ -94,8 +93,6 @@ exports.createProduct = asyncHandler(async (req, res) => {
         res.status(500).json({ error: "Unable to create product" });
       });
   });
-
-  res.status(201).json(product);
 });
 
 exports.resizeProductImages = asyncHandler(async (req, res, next) => {
