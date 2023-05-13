@@ -39,7 +39,7 @@ const productSchema = new mongoose.Schema(
     },
     colors: [String],
     image: String,
-
+    phone: String,
     category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",

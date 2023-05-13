@@ -115,6 +115,10 @@ exports.createProductValidator = [
     .optional()
     .isIn(["nouveau", "occasion"])
     .withMessage("Invalid etat"),
+  check("phone")
+    .optional()
+    .isMobilePhone("ar-TN")
+    .withMessage("only accept tunisian numbers"),
   validatorMiddleware,
 ];
 

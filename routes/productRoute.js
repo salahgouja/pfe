@@ -24,8 +24,6 @@ router
   .route("/")
   .get(getProducts)
   .post(
-    authService.protect,
-    authService.allowedTo("superadmin"),
     uploadProductImage,
     resizeImage,
     setCategoryIdToBody,
@@ -35,14 +33,7 @@ router
 router
   .route("/:id")
   .get(getProductValidator, getProduct)
-  .put(
-    authService.protect,
-    authService.allowedTo("superadmin"),
-    uploadProductImage,
-    resizeImage,
-    updateProductValidator,
-    updateProduct
-  )
+  .put(uploadProductImage, resizeImage, updateProductValidator, updateProduct)
   .delete(deleteProductValidator, deleteProduct);
 
 module.exports = router;
