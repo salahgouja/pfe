@@ -23,31 +23,31 @@ const { body } = require("express-validator");
 const unlinkAsync = util.promisify(fs.unlink);
 
 // Image processing
-// exports.resizeImage = asyncHandler(async (req, res, next) => {
-//   try {
-//     if (!req.files) {
-//       throw new Error("No file provided");
-//     }
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  try {
+    if (!req.files) {
+      throw new Error("No file provided");
+    }
 
-//     if (req.fieldname != null && !req.files.mimetype.includes("image")) {
-//       console.log(req.files.mimetype);
-//       next();
-//     }
+    if (req.fieldname != null && !req.files.mimetype.includes("image")) {
+      console.log(req.files.mimetype);
+      next();
+    }
 
-//     const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
-//     // await sharp(req.files.buffer)
-//     //   .resize(600, 600)
-//     //   .toFormat("jpeg")
-//     //   .jpeg({ quality: 95 })
-//     //   .toFile(`uploads/cours/image${filename}`);
+    const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
+    // await sharp(req.files.buffer)
+    //   .resize(600, 600)
+    //   .toFormat("jpeg")
+    //   .jpeg({ quality: 95 })
+    //   .toFile(`uploads/cours/image${filename}`);
 
-//     req.body.image = filename;
+    req.body.image = filename;
 
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Video processing
 exports.resizeVideo = asyncHandler(async (req, res, next) => {

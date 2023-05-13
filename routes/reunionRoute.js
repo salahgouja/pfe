@@ -1,4 +1,5 @@
 const express = require("express");
+const authService = require("../services/authService");
 const {
   createReunionValidator,
   updateReunionValidator,
@@ -14,10 +15,23 @@ const {
 } = require("../services/reunionService");
 
 const router = express.Router();
-router.route("/").get(getReunions).post(createReunionValidator, createReunion);
+router
+  .route("/")
+  .get(getReunions)
+  .post(
+    authService.protect,
+    authService.allowedTo("teacher", "superadmin"),
+    createReunionValidator,
+    createReunion
+  );
 router
   .route("/:id")
   .get(getReunion)
-  .put(updateReunionValidator, updateReunion)
+  .put(
+    authService.protect,
+    authService.allowedTo("teacher", "superadmin"),
+    updateReunionValidator,
+    updateReunion
+  )
   .delete(deleteReunionValidator, deleteReunion);
 module.exports = router;

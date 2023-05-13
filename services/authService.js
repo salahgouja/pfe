@@ -106,7 +106,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Authorization (User Permissions)
-// ["admin", "manager"]
+
 exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     // 1) access roles

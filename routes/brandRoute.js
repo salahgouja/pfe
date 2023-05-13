@@ -1,4 +1,6 @@
 const express = require("express");
+const authService = require("../services/authService");
+
 const {
   getBrandValidator,
   createBrandValidator,
@@ -16,11 +18,24 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getBrands).post(createBrandValidator, createBrand);
+router
+  .route("/")
+  .get(getBrands)
+  .post(
+    authService.protect,
+    authService.allowedTo("superadmin"),
+    createBrandValidator,
+    createBrand
+  );
 router
   .route("/:id")
   .get(getBrandValidator, getBrand)
-  .put(updateBrandValidator, updateBrand)
+  .put(
+    authService.protect,
+    authService.allowedTo("superadmin"),
+    updateBrandValidator,
+    updateBrand
+  )
   .delete(deleteBrandValidator, deleteBrand);
 
 module.exports = router;

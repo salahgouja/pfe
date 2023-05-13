@@ -50,6 +50,7 @@ if (process.env.NODE_ENV === "development") {
   console.log(`mode: ${process.env.NODE_ENV}`);
 }
 
+// ...
 // Mount Routes
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/subcategories", subCategoryRoute);
@@ -67,13 +68,14 @@ app.use("/api/v1/teacher", teacherRoute);
 
 app.use("/api/v1/auth", authRoute);
 
-// //err handling middleware (turned as json instead of html )
-// app.use((err,req,res,next)=>{
-// res.status(400).json({err});
-// });
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
 });
+
+// Global error handling middleware for express
+app.use(globalError);
+
+// ...
 
 // Global error handling middleware for express
 app.use(globalError);

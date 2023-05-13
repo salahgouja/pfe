@@ -1,4 +1,6 @@
 const express = require("express");
+const authService = require("../services/authService");
+
 const {
   getConservatoireValidator,
   createConservatoireValidator,
@@ -18,12 +20,22 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(getConservatoireValidator, getConservatoires)
-  .post(createConservatoire);
+  .get(getConservatoires)
+  .post(
+    authService.protect,
+    authService.allowedTo("superadmin"),
+    createConservatoireValidator,
+    createConservatoire
+  );
 router
   .route("/:id")
-  .get(getConservatoire)
-  .put(updateConservatoire)
-  .delete(deleteConservatoire);
+  .get(getConservatoireValidator, getConservatoire)
+  .put(
+    authService.protect,
+    authService.allowedTo("superadmin"),
+    updateConservatoireValidator,
+    updateConservatoire
+  )
+  .delete(deleteConservatoireValidator, deleteConservatoire);
 
 module.exports = router;

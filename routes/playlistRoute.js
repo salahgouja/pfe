@@ -1,4 +1,5 @@
 const express = require("express");
+const authService = require("../services/authService");
 const {
   createPlaylistValidator,
   updatePlaylistValidator,
@@ -20,6 +21,8 @@ router
   .route("/")
   .get(getPlaylists)
   .post(
+    authService.protect,
+    authService.allowedTo("teacher", "superadmin"),
     uploadPlaylistImage,
     resizeImage,
     createPlaylistValidator,
@@ -29,6 +32,8 @@ router
   .route("/:id")
   .get(getPlaylist)
   .put(
+    authService.protect,
+    authService.allowedTo("teacher", "superadmin"),
     uploadPlaylistImage,
     resizeImage,
     updatePlaylistValidator,

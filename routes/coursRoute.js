@@ -1,4 +1,6 @@
 const express = require("express");
+const authService = require("../services/authService");
+
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,10 +26,7 @@ const {
   createCours,
   updateCours,
   deleteCours,
-  uploadCoursImage,
-  uploadCoursVideo,
-  uploadCoursPdf,
-  // resizeImage,
+  resizeImage,
   resizeVideo,
   resizePdf,
 } = require("../services/coursService");
@@ -35,8 +34,10 @@ const {
 const router = express.Router();
 
 router.route("/").get(getCourses).post(
-  upload.array("files", 2),
-  // resizeImage,
+  authService.protect,
+  authService.allowedTo("teacher", "superadmin"),
+  upload.array("files", 3),
+  resizeImage,
   resizePdf,
   resizeVideo,
 
@@ -47,7 +48,9 @@ router
   .route("/:id")
   .get(getCoursValidator, getCours)
   .put(
-    upload.array("files", 2),
+    authService.protect,
+    authService.allowedTo("teacher", "superadmin"),
+    upload.array("files", 3),
     // resizeImage,
     resizeVideo,
     resizePdf,

@@ -1,4 +1,6 @@
 const express = require("express");
+const authService = require("../services/authService");
+
 const {
   getCategoryValidator,
   createCategoryValidator,
@@ -21,6 +23,8 @@ router
   .route("/")
   .get(getCategories)
   .post(
+    authService.protect,
+    authService.allowedTo("superadmin"),
     uploadCategoryImage,
     resizeImage,
     createCategoryValidator,
@@ -30,6 +34,8 @@ router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
   .put(
+    authService.protect,
+    authService.allowedTo("superadmin"),
     uploadCategoryImage,
     resizeImage,
     updateCategoryValidator,

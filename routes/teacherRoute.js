@@ -1,10 +1,11 @@
 const express = require("express");
-// const {
-//   getTeacherValidator,
-//   createTeacherValidator,
-//   updateTeacherValidator,
-//   deleteTeacherValidator,
-// } = require("../utils/validators/teacherValidator");
+const authService = require("../services/authService");
+const {
+  getTeacherValidator,
+  createTeacherValidator,
+  updateTeacherValidator,
+  deleteTeacherValidator,
+} = require("../utils/validators/teacherValidator");
 
 const {
   getTeachers,
@@ -16,7 +17,24 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getTeachers).post(createTeacher);
-router.route("/:id").get(getTeacher).put(updateTeacher).delete(deleteTeacher);
+router
+  .route("/")
+  .get(getTeachers)
+  .post(
+    authService.protect,
+    authService.allowedTo("conservatoire", "superadmin"),
+    createTeacherValidator,
+    createTeacher
+  );
+router
+  .route("/:id")
+  .get(getTeacherValidator, getTeacher)
+  .put(
+    authService.protect,
+    authService.allowedTo("conservatoire", "superadmin"),
+    updateTeacherValidator,
+    updateTeacher
+  )
+  .delete(deleteTeacherValidator, deleteTeacher);
 
 module.exports = router;

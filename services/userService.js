@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const authService = require("../services/authService");
+
 const { validationResult } = require("express-validator");
 const ApiError = require("../utils/apiError");
 const sharp = require("sharp");
