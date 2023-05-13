@@ -1,15 +1,18 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const slugify = require("slugify");
+const mongoose = require("mongoose");
+const ApiFeatures = require("../utils/apiFeatures");
+
 const Conservatoire = require("../models/conservatoireModel");
 
 exports.getConservatoires = asyncHandler(async (req, res) => {
-  const conservatoires = await Conservatoire.find();
-  res
-    .status(200)
-    .json({ results: conservatoires.length, data: conservatoires });
+  //build query
+  const apiFeatures = new ApiFeatures(Conservatoire.find(), req.query);
+  //execute query
+  const conservatoires = await apiFeatures.mongooseQuery;
+  res.status(200).json(conservatoires);
 });
-
 exports.getConservatoire = asyncHandler(async (req, res) => {
   const conservatoire = await Conservatoire.findById(req.params.id);
   if (!conservatoire) {
@@ -67,11 +70,11 @@ exports.createConservatoire = asyncHandler(async (req, res) => {
   const { name, email, password, passwordConfirm, phoneNumber, role } =
     req.body;
 
-  // const conservatoireExists = await Conservatoire.findOne({ email });
-  // if (conservatoireExists) {
-  //   res.status(400);
-  //   throw new Error("conservatoire already exists");
-  // }
+  const conservatoireExists = await Conservatoire.findOne({ email });
+  if (conservatoireExists) {
+    res.status(400);
+    throw new Error("conservatoire already exists");
+  }
 
   const conservatoire = await Conservatoire.create({
     name,
@@ -134,6 +137,6 @@ exports.deleteConservatoire = asyncHandler(async (req, res) => {
     throw new ApiError("Conservatoire not found", 404);
   }
 
-  await Conservatoire.remove({ _id: conservatoire._id });
+  await Conservatoire.deleteOne({ _id: conservatoire._id });
   res.status(200).json({ message: "Conservatoire removed" });
 });

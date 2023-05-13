@@ -37,7 +37,7 @@ exports.signupUserValidator = [
 
   check("role")
     .optional()
-    .isIn(["user", "superadmin", "admin", "teacher"])
+    .isIn(["user", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];

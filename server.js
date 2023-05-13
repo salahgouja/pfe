@@ -62,8 +62,8 @@ app.use("/api/v1/reunions", reunionRoute);
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/superAdmin", superAdminRoute);
-app.use("/api/v1/user/conservatoire", conservatoireRoute);
-app.use("/api/v1/user/teacher", teacherRoute);
+app.use("/api/v1/conservatoire", conservatoireRoute);
+app.use("/api/v1/teacher", teacherRoute);
 
 app.use("/api/v1/auth", authRoute);
 

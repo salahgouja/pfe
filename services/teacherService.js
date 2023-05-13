@@ -2,6 +2,7 @@ const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const mongoose = require("mongoose");
+const ApiFeatures = require("../utils/apiFeatures");
 
 const Teacher = require("../models/teacherModel");
 const Conservatoire = require("../models/conservatoireModel");
@@ -55,11 +56,10 @@ exports.createTeacher = (req, res) => {
 };
 
 // Nested route
-// GET /api/v1/conservatoires/:conservatoireId/teacher
+// GET /api/v1/teachers/:teacherId/teacher
 exports.createFilterObj = (req, res, next) => {
   let filterObject = {};
-  if (req.params.conservatoireId)
-    filterObject = { conservatoire: req.params.categoryId };
+  if (req.params.teacherId) filterObject = { teacher: req.params.teacherId };
   req.filterObj = filterObject;
   next();
 };
@@ -67,9 +67,13 @@ exports.createFilterObj = (req, res, next) => {
 // @desc    Get list of teachers
 // @route   GET /api/v1/user/teacher
 // @access  Public
+
 exports.getTeachers = asyncHandler(async (req, res) => {
-  const teachers = await Teacher.find({});
-  res.status(200).json({ data: teachers });
+  //build query
+  const apiFeatures = new ApiFeatures(Teacher.find(), req.query);
+  //execute query
+  const teachers = await apiFeatures.mongooseQuery;
+  res.status(200).json(teachers);
 });
 
 // @desc    Get specific teachers by id
