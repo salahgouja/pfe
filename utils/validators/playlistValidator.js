@@ -53,6 +53,11 @@ exports.updatePlaylistValidator = [
     .withMessage("Playlist description is required.")
     .isLength({ max: 1000 })
     .withMessage("Playlist description should be at most 1000 characters."),
+  check("prix")
+    .notEmpty()
+    .withMessage("Cours price is required")
+    .isNumeric()
+    .withMessage("Cours price must be a number"),
   check("courses")
     .optional()
     .isArray({ min: 1 })

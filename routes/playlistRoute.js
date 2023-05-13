@@ -11,16 +11,28 @@ const {
   createPlaylist,
   updatePlaylist,
   deletePlaylist,
+  uploadPlaylistImage,
+  resizeImage,
 } = require("../services/playlistService");
 
 const router = express.Router();
 router
   .route("/")
   .get(getPlaylists)
-  .post(createPlaylistValidator, createPlaylist);
+  .post(
+    uploadPlaylistImage,
+    resizeImage,
+    createPlaylistValidator,
+    createPlaylist
+  );
 router
   .route("/:id")
   .get(getPlaylist)
-  .put(updatePlaylistValidator, updatePlaylist)
+  .put(
+    uploadPlaylistImage,
+    resizeImage,
+    updatePlaylistValidator,
+    updatePlaylist
+  )
   .delete(deletePlaylistValidator, deletePlaylist);
 module.exports = router;

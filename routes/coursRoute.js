@@ -27,7 +27,7 @@ const {
   uploadCoursImage,
   uploadCoursVideo,
   uploadCoursPdf,
-  resizeImage,
+  // resizeImage,
   resizeVideo,
   resizePdf,
 } = require("../services/coursService");
@@ -35,8 +35,8 @@ const {
 const router = express.Router();
 
 router.route("/").get(getCourses).post(
-  upload.array("files", 3),
-  resizeImage,
+  upload.array("files", 2),
+  // resizeImage,
   resizePdf,
   resizeVideo,
 
@@ -47,8 +47,8 @@ router
   .route("/:id")
   .get(getCoursValidator, getCours)
   .put(
-    upload.array("files", 3),
-    resizeImage,
+    upload.array("files", 2),
+    // resizeImage,
     resizeVideo,
     resizePdf,
     updateCoursValidator,

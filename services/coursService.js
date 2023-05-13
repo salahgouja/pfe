@@ -11,10 +11,10 @@ const Cours = require("../models/coursModel");
 const Playlist = require("../models/playlistModel");
 const Courses = require("../models/coursModel");
 const ApiFeatures = require("../utils/apiFeatures");
-const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const { uploadSinglePdf } = require("../middlewares/uploadPdfMiddleware");
 const { uploadSingleVideo } = require("../middlewares/uploadVideoMiddleware");
-exports.uploadCoursImage = uploadSingleImage("image");
+// exports.uploadCoursImage = uploadSingleImage("image");
 exports.uploadCoursVideo = uploadSingleVideo("Video");
 exports.uploadCoursPdf = uploadSinglePdf("Pdf");
 const fs = require("fs");
@@ -23,31 +23,31 @@ const { body } = require("express-validator");
 const unlinkAsync = util.promisify(fs.unlink);
 
 // Image processing
-exports.resizeImage = asyncHandler(async (req, res, next) => {
-  try {
-    if (!req.files) {
-      throw new Error("No file provided");
-    }
+// exports.resizeImage = asyncHandler(async (req, res, next) => {
+//   try {
+//     if (!req.files) {
+//       throw new Error("No file provided");
+//     }
 
-    if (req.fieldname != null && !req.files.mimetype.includes("image")) {
-      console.log(req.files.mimetype);
-      next();
-    }
+//     if (req.fieldname != null && !req.files.mimetype.includes("image")) {
+//       console.log(req.files.mimetype);
+//       next();
+//     }
 
-    const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
-    // await sharp(req.files.buffer)
-    //   .resize(600, 600)
-    //   .toFormat("jpeg")
-    //   .jpeg({ quality: 95 })
-    //   .toFile(`uploads/cours/image${filename}`);
+//     const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
+//     // await sharp(req.files.buffer)
+//     //   .resize(600, 600)
+//     //   .toFormat("jpeg")
+//     //   .jpeg({ quality: 95 })
+//     //   .toFile(`uploads/cours/image${filename}`);
 
-    req.body.image = filename;
+//     req.body.image = filename;
 
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // Video processing
 exports.resizeVideo = asyncHandler(async (req, res, next) => {
@@ -272,16 +272,16 @@ exports.getCours = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateCours = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, playlist, discription, prix, pdf, video } = req.body;
+  const { title, playlist, discription, prix, image, pdf, video } = req.body;
 
   const cours = await Cours.findOneAndUpdate(
     { _id: id },
     {
       title,
-      slug: slugify(title),
       playlist,
       discription,
       prix,
+      image,
       pdf,
       video,
     },

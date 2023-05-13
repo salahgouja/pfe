@@ -17,4 +17,4 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadSinglePdf = (fieldName) => multerOptions().single(fieldName);
+exports.uploadSinglePdf = (filename) => multerOptions().single(filename);

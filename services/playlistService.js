@@ -1,7 +1,29 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
-const slugify = require("slugify");
 const Playlist = require("../models/playlistModel");
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// Upload single image
+exports.uploadPlaylistImage = uploadSingleImage("image");
+
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `playlist-${uuidv4()}-${Date.now()}.jpeg`;
+
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/playlists/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
 
 exports.getPlaylists = asyncHandler(async (req, res) => {
   const playlists = await Playlist.find();
@@ -24,11 +46,8 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
     throw new ApiError("Playlist with this title already exists", 400);
   }
 
-  const slug = slugify(title, { lower: true });
-
   const playlist = new Playlist({
     title,
-    slug,
     cours,
     image,
     prix,
@@ -38,7 +57,7 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
 
   await playlist.save();
 
-  res.status(201).json(playlist);
+  res.status(201).json({ message: "Playlist created successfully", playlist });
 });
 
 exports.updatePlaylist = asyncHandler(async (req, res) => {
@@ -47,15 +66,10 @@ exports.updatePlaylist = asyncHandler(async (req, res) => {
     throw new ApiError("Playlist not found", 404);
   }
 
-  const { title, cours, image } = req.body;
+  const { title, prix, description, image, teacherName } = req.body;
 
   if (title) {
     playlist.title = title;
-    playlist.slug = slugify(title, { lower: true });
-  }
-
-  if (cours) {
-    playlist.cours = cours;
   }
 
   if (image) {
@@ -81,6 +95,6 @@ exports.deletePlaylist = asyncHandler(async (req, res) => {
     throw new ApiError("Playlist not found", 404);
   }
 
-  await Playlist.remove({ _id: playlist._id });
+  await Playlist.deleteOne({ _id: playlist._id });
   res.status(200).json({ message: "Playlist removed" });
 });

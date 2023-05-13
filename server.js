@@ -13,6 +13,8 @@ const categoryRoute = require("./routes/categoryRoute");
 const subCategoryRoute = require("./routes/subCategoryRoute");
 
 const brandRoute = require("./routes/brandRoute");
+
+const reunionRoute = require("./routes/reunionRoute");
 const productRoute = require("./routes/productRoute");
 const playlistRoute = require("./routes/playlistRoute");
 const coursRoute = require("./routes/coursRoute");
@@ -56,6 +58,7 @@ app.use("/api/v1/products", productRoute);
 
 app.use("/api/v1/cours", coursRoute);
 app.use("/api/v1/playlists", playlistRoute);
+app.use("/api/v1/reunions", reunionRoute);
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/superAdmin", superAdminRoute);

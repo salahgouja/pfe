@@ -17,4 +17,4 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadSingleImage = (fieldName) => multerOptions().single(fieldName);
+exports.uploadSingleImage = (filename) => multerOptions().single(filename);
