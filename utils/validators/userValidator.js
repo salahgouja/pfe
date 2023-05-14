@@ -63,7 +63,7 @@ exports.updateUserValidator = [
     .withMessage("Too short password"),
   check("role")
     .optional()
-    .isIn(["user", "conservatoire", "teacher"])
+    .isIn(["superadmin", "user", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];

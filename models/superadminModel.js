@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const bcrypt = require("bcrypt");
 
-const teacherSchema = new mongoose.Schema(
+const superadminSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -20,24 +20,14 @@ const teacherSchema = new mongoose.Schema(
       minlength: [6, "too short password"],
       select: true, // select :false exclude password from query results
     },
-
-    phoneNumber: String,
-    adressteacher: String,
-    image: String,
-
-    conservatoire: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Conservatoire",
-      required: [true, "Cours must be belong to Conservatoire"],
-    },
   },
 
   {
     timestamps: true,
   }
 );
-// Hash the password before saving the user document
-teacherSchema.pre("save", async function (next) {
+// Hash the password before saving the superadmin document
+superadminSchema.pre("save", async function (next) {
   // Only hash the password if it has been modified or is new
   if (!this.isModified("password")) {
     return next();
@@ -55,19 +45,5 @@ teacherSchema.pre("save", async function (next) {
     return next(error);
   }
 });
-const setImageURL = (doc) => {
-  if (doc.image) {
-    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/teachers/${doc.image}`;
-    doc.image = imageUrl;
-  }
-};
-// findOne, findAll and update
-teacherSchema.post("init", (doc) => {
-  setImageURL(doc);
-});
 
-// create
-teacherSchema.post("save", (doc) => {
-  setImageURL(doc);
-});
-module.exports = mongoose.model("Teacher", teacherSchema);
+module.exports = mongoose.model("User", superadminSchema);

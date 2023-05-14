@@ -5,7 +5,7 @@ const ApiError = require("../utils/apiError");
 // @desc    Get all superAdmins
 // @route   GET /api/superAdmins
 // @access  Private/superAdmin
-const getSuperAdmins = asyncHandler(async (req, res) => {
+exports.getSuperAdmins = asyncHandler(async (req, res) => {
   const superAdmins = await SuperAdmin.find({});
   res.json(superAdmins);
 });
@@ -13,7 +13,7 @@ const getSuperAdmins = asyncHandler(async (req, res) => {
 // @desc    Get superAdmin by ID
 // @route   GET /api/superAdmins/:id
 // @access  Private/Admin
-const getSuperAdmin = asyncHandler(async (req, res) => {
+exports.getSuperAdmin = asyncHandler(async (req, res) => {
   const superAdmin = await SuperAdmin.findById(req.params.id);
 
   if (superAdmin) {
@@ -27,9 +27,8 @@ const getSuperAdmin = asyncHandler(async (req, res) => {
 // @desc    Create superAdmin
 // @route   POST /api/superAdmins
 // @access  Public
-const createSuperAdmin = asyncHandler(async (req, res) => {
-  const { name, email, password, passwordConfirm, phoneNumber, role } =
-    req.body;
+exports.createSuperAdmin = asyncHandler(async (req, res) => {
+  const { name, email, password, passwordConfirm, role } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -48,7 +47,6 @@ const createSuperAdmin = asyncHandler(async (req, res) => {
     email,
     password,
     passwordConfirm,
-    phoneNumber,
     role,
   });
 
@@ -59,7 +57,6 @@ const createSuperAdmin = asyncHandler(async (req, res) => {
       email: superAdmin.email,
       password: superAdmin.password,
       passwordConfirm: superAdmin.passwordConfirm,
-      phoneNumber: superAdmin.phoneNumber,
       role: superAdmin.role,
     });
   } else {
@@ -71,13 +68,14 @@ const createSuperAdmin = asyncHandler(async (req, res) => {
 // @desc    Update superAdmin
 // @route   PUT /api/superAdmins/:id
 // @access  Private/Admin
-const updateSuperAdmin = asyncHandler(async (req, res) => {
+exports.updateSuperAdmin = asyncHandler(async (req, res) => {
   const superAdmin = await SuperAdmin.findById(req.params.id);
 
   if (superAdmin) {
     superAdmin.name = req.body.name || superAdmin.name;
     superAdmin.email = req.body.email || superAdmin.email;
-    superAdmin.phoneNumber = req.body.phoneNumber || superAdmin.phoneNumber;
+    superAdmin.password = req.body.password || superAdmin.password;
+
     superAdmin.role = req.body.role || superAdmin.role;
 
     const updatedSuperAdmin = await superAdmin.save();
@@ -86,7 +84,6 @@ const updateSuperAdmin = asyncHandler(async (req, res) => {
       _id: updatedSuperAdmin._id,
       name: updatedSuperAdmin.name,
       email: updatedSuperAdmin.email,
-      phoneNumber: updatedSuperAdmin.phoneNumber,
       role: updatedSuperAdmin.role,
     });
   } else {
@@ -98,7 +95,7 @@ const updateSuperAdmin = asyncHandler(async (req, res) => {
 // @desc    Delete SuperAdmin
 // @route   DELETE /api/SuperAdmins/:id
 // @access  Private/Admin
-const deleteSuperAdmin = asyncHandler(async (req, res) => {
+exports.deleteSuperAdmin = asyncHandler(async (req, res) => {
   const superAdmin = await SuperAdmin.findById(req.params.id);
 
   if (superAdmin) {
@@ -109,11 +106,3 @@ const deleteSuperAdmin = asyncHandler(async (req, res) => {
     throw new Error("SuperAdmin not found");
   }
 });
-
-module.exports = {
-  getSuperAdmins,
-  getSuperAdmin,
-  createSuperAdmin,
-  updateSuperAdmin,
-  deleteSuperAdmin,
-};

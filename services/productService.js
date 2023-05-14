@@ -15,11 +15,13 @@ const { query } = require("express");
 exports.uploadProductImage = uploadSingleImage("image");
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
-  const filename = `product-${uuidv4()}-${Date.now()}.jpeg`;
+  const filename = `product-${uuidv4()}-${Date.now()}.${req.file.originalname
+    .split(".")
+    .pop()}`;
 
   if (req.file) {
     await sharp(req.file.buffer)
-      .resize(600, 600)
+      .resize(400, 400)
       .toFormat("jpeg")
       .jpeg({ quality: 95 })
       .toFile(`uploads/products/${filename}`);

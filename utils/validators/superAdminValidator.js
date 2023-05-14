@@ -36,18 +36,9 @@ exports.createSuperAdminValidator = [
       return true;
     }),
 
-  check("passwordConfirm")
-    .notEmpty()
-    .withMessage("password confirmation required"),
-
-  check("phoneNumber")
-    .optional()
-    .isMobilePhone("ar-TN")
-    .withMessage("only accept tunisian numbers"),
-
   check("role")
     .optional()
-    .isIn(["user", "superadmin", "admin", "teacher"])
+    .isIn(["user", "superadmin", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];
@@ -69,7 +60,7 @@ exports.updateSuperAdminValidator = [
     .withMessage("Too short password"),
   check("role")
     .optional()
-    .isIn(["user", "superadmin", "admin", "teacher"])
+    .isIn(["user", "superadmin", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
   validatorMiddleware,
 ];

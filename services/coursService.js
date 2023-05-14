@@ -34,12 +34,14 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       next();
     }
 
-    const filename = `cours-${uuidv4()}-${Date.now()}.jpeg`;
-    // await sharp(req.files.buffer)
-    //   .resize(600, 600)
-    //   .toFormat("jpeg")
-    //   .jpeg({ quality: 95 })
-    //   .toFile(`uploads/cours/image${filename}`);
+    const filename = `cours-${uuidv4()}-${Date.now()}.${req.file.originalname
+      .split(".")
+      .pop()}`;
+    await sharp(req.files.buffer)
+      .resize(400, 400)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/cours/image${filename}`);
 
     req.body.image = filename;
 

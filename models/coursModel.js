@@ -38,21 +38,21 @@ const coursSchema = new mongoose.Schema(
 );
 
 /----------------------------------------------------------------------------/;
-// const setImageURL = (doc) => {
-//   if (doc.image) {
-//     const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/cours/image${doc.image}`;
-//     doc.image = imageUrl;
-//   }
-// };
-// // findOne, findAll and update
-// coursSchema.post("init", (doc) => {
-//   setImageURL(doc);
-// });
+const setImageURL = (doc) => {
+  if (doc.image) {
+    const imageUrl = ` ${process.env.BASE_URL}api/v1/assets/cours/image${doc.image}`;
+    doc.image = imageUrl;
+  }
+};
+// findOne, findAll and update
+coursSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
 
-// // create
-// coursSchema.post("save", (doc) => {
-//   setImageURL(doc);
-// });
+// create
+coursSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
 /----------------------------------------------------------------------------/;
 const setVideoURL = (doc) => {
   if (doc.video) {

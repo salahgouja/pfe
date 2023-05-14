@@ -6,6 +6,32 @@ const ApiFeatures = require("../utils/apiFeatures");
 
 const Teacher = require("../models/teacherModel");
 const Conservatoire = require("../models/conservatoireModel");
+
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// Upload single image
+exports.uploadUserImage = uploadSingleImage("image");
+
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `teacher-${uuidv4()}-${Date.now()}.${req.file.originalname
+    .split(".")
+    .pop()}`;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(400, 400)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/teachers/${filename}`);
+
+    // Save image into our db
+    req.body.image = filename;
+  }
+
+  next();
+});
+
 exports.setConservatoireIdToBody = (req, res, next) => {
   // Nested route
   if (!req.body.conservatoire)
@@ -65,7 +91,7 @@ exports.createFilterObj = (req, res, next) => {
 };
 
 // @desc    Get list of teachers
-// @route   GET /api/v1/user/teacher
+// @route   GET /api/v1/teacher
 // @access  Public
 
 exports.getTeachers = asyncHandler(async (req, res) => {
@@ -94,18 +120,25 @@ exports.getTeacher = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateTeacher = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { name, email, password, phoneNumber, adressteacher, conservatoire } =
-    req.body;
+  const {
+    name,
+    email,
+    password,
+    phoneNumber,
+    adressteacher,
+    image,
+    conservatoire,
+  } = req.body;
 
   const teacher = await Teacher.findOneAndUpdate(
     { _id: id },
     {
       name,
-      slug: slugify(name),
       email,
       password,
       phoneNumber,
       adressteacher,
+      image,
       conservatoire,
     },
     { new: true }
