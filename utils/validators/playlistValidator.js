@@ -22,6 +22,9 @@ exports.createPlaylistValidator = [
   check("teacherName")
     .isLength({ max: 20 })
     .withMessage("Playlist teacherName should be at most 20 characters."),
+  check("conservatoireName")
+    .isLength({ max: 20 })
+    .withMessage("Playlist conservatoireName should be at most 20 characters."),
   check("cours")
     .isArray({ min: 1 })
     .withMessage("At least one course is required.")
@@ -58,6 +61,16 @@ exports.updatePlaylistValidator = [
     .withMessage("Cours price is required")
     .isNumeric()
     .withMessage("Cours price must be a number"),
+  check("image")
+    .optional()
+    .isArray()
+    .withMessage("image should be array of string"),
+  check("teacherName")
+    .isLength({ max: 20 })
+    .withMessage("Playlist teacherName should be at most 20 characters."),
+  check("conservatoireName")
+    .isLength({ max: 20 })
+    .withMessage("Playlist conservatoireName should be at most 20 characters."),
   check("courses")
     .optional()
     .isArray({ min: 1 })

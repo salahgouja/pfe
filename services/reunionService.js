@@ -17,21 +17,20 @@ exports.getReunion = asyncHandler(async (req, res) => {
 });
 
 exports.createReunion = asyncHandler(async (req, res) => {
-  const { title, description, lien, date } = req.body;
+  const { title, description, lien, date, teachername, time, prix } = req.body;
 
   const reunionExists = await Reunion.findOne({ title });
   if (reunionExists) {
     throw new ApiError("Reunion with this title already exists", 400);
   }
-
-  const slug = slugify(title, { lower: true });
-
   const reunion = new Reunion({
     title,
-    slug,
     description,
     lien,
     date,
+    teachername,
+    time,
+    prix,
   });
 
   await reunion.save();
@@ -45,7 +44,7 @@ exports.updateReunion = asyncHandler(async (req, res) => {
     throw new ApiError("Reunion not found", 404);
   }
 
-  const { title, description, lien, date } = req.body;
+  const { title, description, lien, date, teachername, time, prix } = req.body;
 
   if (title) {
     reunion.title = title;
@@ -61,6 +60,15 @@ exports.updateReunion = asyncHandler(async (req, res) => {
   }
   if (date) {
     reunion.date = date;
+  }
+  if (teachername) {
+    reunion.teachername = teachername;
+  }
+  if (time) {
+    reunion.time = time;
+  }
+  if (prix) {
+    reunion.prix = prix;
   }
 
   await reunion.save();

@@ -5,6 +5,7 @@ const ApiError = require("../utils/apiError");
 const User = require("../models/userModel");
 const Teacher = require("../models/teacherModel");
 const Conservatoire = require("../models/conservatoireModel");
+const SuperAdmin = require("../models/superAdminModel");
 
 const crypto = require("crypto");
 
@@ -64,6 +65,14 @@ exports.login = asyncHandler(async (req, res, next) => {
     ) {
       responseData = conservatoire;
       token = createToken(conservatoire._id);
+    }
+  }
+  // Check if superAdmin exists
+  if (!responseData) {
+    const superAdmin = await SuperAdmin.findOne({ email });
+    if (superAdmin && (await bcrypt.compare(password, superAdmin.password))) {
+      responseData = superAdmin;
+      token = createToken(superAdmin._id);
     }
   }
 

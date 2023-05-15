@@ -20,7 +20,30 @@ const reunionSchema = new mongoose.Schema(
       type: String,
     },
     date: {
-      type: Date,
+      type: String,
+      validate: {
+        validator: function (value) {
+          // Regular expression to validate the date format (jj/mm/aa)
+          return /^\d{2}\/\d{2}\/\d{2}$/.test(value);
+        },
+        message: "Invalid date format (use jj/mm/aa)",
+      },
+    },
+    teachername: {
+      type: String,
+    },
+    time: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          // Regular expression to validate the time format (00:00 AM/PM)
+          return /^(0[0-9]|1[0-2]):[0-5][0-9] (AM|PM)$/.test(value);
+        },
+        message: "Invalid time format (use 00:00 AM/PM)",
+      },
+    },
+    prix: {
+      type: Number,
     },
   },
   { timestamps: true }

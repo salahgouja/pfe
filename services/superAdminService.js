@@ -50,15 +50,17 @@ exports.createSuperAdmin = asyncHandler(async (req, res) => {
     role,
   });
 
+  // Generate token
+  const token = createToken(superAdmin._id);
+
   if (superAdmin) {
+    // Send response to the client with the token
     res.status(201).json({
-      _id: superAdmin._id,
-      name: superAdmin.name,
-      email: superAdmin.email,
-      password: superAdmin.password,
-      passwordConfirm: superAdmin.passwordConfirm,
-      role: superAdmin.role,
+      data: superAdmin,
+      token,
     });
+
+    superAdmin.save();
   } else {
     res.status(400);
     throw new Error("Invalid superAdmin data");

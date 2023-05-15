@@ -30,6 +30,9 @@ const playlistSchema = new mongoose.Schema(
     teacherName: {
       type: String,
     },
+    conservatoireName: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

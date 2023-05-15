@@ -39,7 +39,15 @@ exports.getPlaylist = asyncHandler(async (req, res) => {
 });
 
 exports.createPlaylist = asyncHandler(async (req, res) => {
-  const { title, cours, image, prix, description, teacherName } = req.body;
+  const {
+    title,
+    cours,
+    image,
+    prix,
+    description,
+    teacherName,
+    conservatoireName,
+  } = req.body;
 
   const playlistExists = await Playlist.findOne({ title });
   if (playlistExists) {
@@ -53,6 +61,7 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
     prix,
     description,
     teacherName,
+    conservatoireName,
   });
 
   await playlist.save();
@@ -66,7 +75,8 @@ exports.updatePlaylist = asyncHandler(async (req, res) => {
     throw new ApiError("Playlist not found", 404);
   }
 
-  const { title, prix, description, image, teacherName } = req.body;
+  const { title, prix, description, image, teacherName, conservatoireName } =
+    req.body;
 
   if (title) {
     playlist.title = title;
@@ -83,6 +93,9 @@ exports.updatePlaylist = asyncHandler(async (req, res) => {
   }
   if (teacherName) {
     playlist.teacherName = teacherName;
+  }
+  if (conservatoireName) {
+    playlist.conservatoireName = conservatoireName;
   }
   await playlist.save();
 

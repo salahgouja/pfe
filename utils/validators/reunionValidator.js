@@ -18,8 +18,15 @@ exports.createReunionValidator = [
   check("date")
     .notEmpty()
     .withMessage("Reunion date is required.")
-    .isISO8601()
+
     .withMessage("Invalid reunion date. Please provide a valid date."),
+  check("time")
+    .notEmpty()
+    .withMessage("Reunion time is required.")
+    .withMessage("Invalid reunion time. Please provide a valid time."),
+  check("teachername")
+    .notEmpty()
+    .withMessage("please Add Reunion teachername ."),
 ];
 // Validate reunion update
 exports.updateReunionValidator = [

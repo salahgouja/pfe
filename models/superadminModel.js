@@ -50,4 +50,4 @@ superadminSchema.pre("save", async function (next) {
   }
 });
 
-module.exports = mongoose.model("User", superadminSchema);
+module.exports = mongoose.model("SuperAdmin", superadminSchema);
