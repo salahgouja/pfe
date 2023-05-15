@@ -26,7 +26,7 @@ const conservatoireRoute = require("./routes/conservatoireRoute");
 const teacherRoute = require("./routes/teacherRoute");
 
 const authRoute = require("./routes/authRoute");
-
+const contactusRoute = require("./routes/contactusRoute");
 // Connect with db
 dbConnection();
 
@@ -67,6 +67,8 @@ app.use("/api/v1/conservatoire", conservatoireRoute);
 app.use("/api/v1/teacher", teacherRoute);
 
 app.use("/api/v1/auth", authRoute);
+
+app.use("/api/v1/contactus", contactusRoute);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));

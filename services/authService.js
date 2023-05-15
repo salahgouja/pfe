@@ -5,7 +5,7 @@ const ApiError = require("../utils/apiError");
 const User = require("../models/userModel");
 const crypto = require("crypto");
 
-const sendEmail = require("../utils/sendEmail");
+// const sendEmail = require("../utils/sendEmail");
 const createToken = require("../utils/createToken");
 
 // @desc    signup
