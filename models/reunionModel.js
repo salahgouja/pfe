@@ -24,9 +24,9 @@ const reunionSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           // Regular expression to validate the date format (jj/mm/aa)
-          return /^\d{2}\/\d{2}\/\d{2}$/.test(value);
+          return /^\d{2}\/\d{2}\/\d{4}$/.test(value);
         },
-        message: "Invalid date format (use jj/mm/aa)",
+        message: "Invalid date format (use jj/mm/aaaa)",
       },
     },
     teachername: {
