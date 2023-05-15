@@ -21,18 +21,18 @@ exports.createCoursValidator = [
     .withMessage("Cours price is required")
     .isNumeric()
     .withMessage("Cours price must be a number"),
-  // check("image")
-  //   .optional()
-  //   .isArray()
-  //   .withMessage("image should be array of string"),
-  // check("pdf")
-  //   .optional()
-  //   .isArray()
-  //   .withMessage("pdf should be array of string"),
-  // check("video")
-  //   .optional()
-  //   .isArray()
-  //   .withMessage("video should be array of string"),
+  check("image")
+    .optional()
+    .isArray()
+    .withMessage("image should be array of string"),
+  check("pdf")
+    .optional()
+    .isArray()
+    .withMessage("pdf should be array of string"),
+  check("video")
+    .optional()
+    .isArray()
+    .withMessage("video should be array of string"),
 
   check("ratingsAverage")
     .optional()
