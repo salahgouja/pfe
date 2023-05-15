@@ -20,6 +20,10 @@ const superadminSchema = new mongoose.Schema(
       minlength: [6, "too short password"],
       select: true, // select :false exclude password from query results
     },
+    role: {
+      type: String,
+      default: "superadmin",
+    },
   },
 
   {

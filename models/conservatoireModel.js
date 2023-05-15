@@ -30,6 +30,10 @@ const conservatoireSchema = new mongoose.Schema(
         ref: "Teacher",
       },
     ],
+    role: {
+      type: String,
+      default: "conservatoire",
+    },
   },
 
   {

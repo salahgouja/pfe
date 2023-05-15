@@ -128,6 +128,7 @@ exports.updateTeacher = asyncHandler(async (req, res, next) => {
     adressteacher,
     image,
     conservatoire,
+    role,
   } = req.body;
 
   const teacher = await Teacher.findOneAndUpdate(
@@ -140,6 +141,7 @@ exports.updateTeacher = asyncHandler(async (req, res, next) => {
       adressteacher,
       image,
       conservatoire,
+      role,
     },
     { new: true }
   );
