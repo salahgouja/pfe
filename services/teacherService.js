@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
@@ -7,6 +9,8 @@ const ApiFeatures = require("../utils/apiFeatures");
 const Teacher = require("../models/teacherModel");
 const Conservatoire = require("../models/conservatoireModel");
 
+// const sendEmail = require("../utils/sendEmail");
+const createToken = require("../utils/createToken");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
@@ -70,9 +74,14 @@ exports.createTeacher = (req, res) => {
       { new: true, useFindAndModify: false }
     )
       .then(() => {
-        res
-          .status(201)
-          .json({ message: "teacher added successfully", data: teacher });
+        // 2- Generate token
+        const token = createToken(teacher._id);
+        // 3- Send response to the client
+        res.status(201).json({
+          message: "teacher added successfully",
+          data: teacher,
+          token,
+        });
       })
       .catch((error) => {
         console.error("Error:", error);

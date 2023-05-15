@@ -3,13 +3,15 @@ const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const User = require("../models/userModel");
+const Teacher = require("../models/teacherModel");
+const Conservatoire = require("../models/conservatoireModel");
+
 const crypto = require("crypto");
 
 // const sendEmail = require("../utils/sendEmail");
 const createToken = require("../utils/createToken");
-
 // @desc    signup
-// @route   post /api/v1/auth/signup
+// @route   POST /api/v1/auth/signup
 // @access  Public
 exports.signup = asyncHandler(async (req, res, next) => {
   // 1- Create user
@@ -20,35 +22,60 @@ exports.signup = asyncHandler(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     role: req.body.role,
   });
-  // 2- Generate token
 
-  //before
-  //   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-  //     expiresIn: process.env.JWT_EXP_KEY,
-  //   });
+  // 2- Generate token
   const token = createToken(user._id);
+
+  // 3- Send response to the client
   res.status(201).json({ data: user, token });
-  next();
 });
 
 // @desc    Login
 // @route   GET /api/v1/auth/login
 // @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
-  // 1) check if password and email in the body (validation)
-  // 2) check if user exist & check if password is correct
-  const user = await User.findOne({ email: req.body.email });
+  const { email, password } = req.body;
 
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+  let responseData = null;
+  let token = null;
+
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    responseData = user;
+    token = createToken(user._id);
+  }
+
+  // Check if teacher exists
+  if (!responseData) {
+    const teacher = await Teacher.findOne({ email });
+    if (teacher && (await bcrypt.compare(password, teacher.password))) {
+      responseData = teacher;
+      token = createToken(teacher._id);
+    }
+  }
+
+  // Check if conservatoire exists
+  if (!responseData) {
+    const conservatoire = await Conservatoire.findOne({ email });
+    if (
+      conservatoire &&
+      (await bcrypt.compare(password, conservatoire.password))
+    ) {
+      responseData = conservatoire;
+      token = createToken(conservatoire._id);
+    }
+  }
+
+  if (responseData) {
+    // Delete password from response
+    delete responseData._doc.password;
+
+    // Send response to client
+    res.status(200).json({ data: responseData, token });
+  } else {
     return next(new ApiError("Incorrect email or password", 401));
   }
-  // 3) generate token
-  const token = createToken(user._id);
-
-  // Delete password from response
-  delete user._doc.password;
-  // 4) send response to client side
-  res.status(200).json({ data: user, token });
 });
 
 // @desc   make sure the user is logged in
