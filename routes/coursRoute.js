@@ -37,6 +37,8 @@ router
   .put(
     authService.protect,
     authService.allowedTo("teacher", "superadmin"),
+    upload.fields([{ name: "image" }, { name: "video" }, { name: "pdf" }]),
+    createFilterObj,
     updateCoursValidator,
     updateCours
   )

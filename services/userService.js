@@ -108,7 +108,6 @@ exports.updateUser = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
     user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
     user.image = req.body.image || user.image;
-    user.role = req.body.role || user.role;
 
     const updatedUser = await user.save();
 
@@ -118,7 +117,6 @@ exports.updateUser = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       phoneNumber: updatedUser.phoneNumber,
       image: updatedUser.image,
-      role: updatedUser.role,
     });
   } else {
     res.status(404);

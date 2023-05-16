@@ -54,19 +54,26 @@ exports.setPlaylistIdToBody = (req, res, next) => {
 exports.createCours = async (req, res) => {
   try {
     const { title, playlist, description, prix } = req.body;
-    const image = req.files["image"][0].filename;
-    const video = req.files["video"][0].filename;
-    const pdf = req.files["pdf"][0].filename;
-
-    const newCours = await Cours.create({
+    const newCoursData = {
       title,
       playlist,
       description,
       prix,
-      image,
-      video,
-      pdf,
-    });
+    };
+
+    if (req.files["image"]) {
+      newCoursData.image = req.files["image"][0].filename;
+    }
+
+    if (req.files["video"]) {
+      newCoursData.video = req.files["video"][0].filename;
+    }
+
+    if (req.files["pdf"]) {
+      newCoursData.pdf = req.files["pdf"][0].filename;
+    }
+
+    const newCours = await Cours.create(newCoursData);
 
     Playlist.findByIdAndUpdate(
       playlist,
@@ -95,8 +102,8 @@ exports.createCours = async (req, res) => {
 // Update a specific Cours
 exports.updateCours = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, playlist, description, prix } = req.body;
-  const updateFields = { title, playlist, description, prix };
+  const { title, playlist, description } = req.body;
+  const updateFields = { title, playlist, description };
 
   if (req.files && req.files.image) {
     updateFields.image = req.files.image[0].filename;

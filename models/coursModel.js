@@ -21,9 +21,7 @@ const coursSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    prix: {
-      type: Number,
-    },
+
     image: String,
     pdf: String,
     video: String,
