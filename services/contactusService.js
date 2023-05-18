@@ -4,7 +4,7 @@ exports.sendContactusEmail = (req, res) => {
   const { nom, email, sujet, description } = req.body;
 
   const mailOptions = {
-    from: "sender@example.com", // Specify the sender's email address
+    from: email, // Specify the sender's email address
     to: process.env.EMAIL, // Specify the recipient's email address
     subject: "Contact Us Form Submission",
     text: `Name: ${nom}\nEmail: ${email}\nSubject: ${sujet}\nDescription: ${description}`,

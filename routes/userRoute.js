@@ -42,6 +42,11 @@ router
     updateUserValidator,
     updateUser
   )
-  .delete(deleteUserValidator, deleteUser);
+  .delete(
+    // authService.protect,
+    // authService.allowedTo("conservatoire", "teacher", "superadmin", "user"),
+    deleteUserValidator,
+    deleteUser
+  );
 
 module.exports = router;
