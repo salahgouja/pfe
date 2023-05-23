@@ -25,21 +25,6 @@ exports.createPlaylistValidator = [
   check("conservatoireName")
     .isLength({ max: 20 })
     .withMessage("Playlist conservatoireName should be at most 20 characters."),
-  check("cours")
-    .isArray({ min: 1 })
-    .withMessage("At least one course is required.")
-    .custom(async (cours) => {
-      const invalidCoursIds = [];
-      for (const coursId of cours) {
-        const cours = await Cours.findById(coursId);
-        if (!cours) {
-          invalidCoursIds.push(coursId);
-        }
-      }
-      if (invalidCoursIds.length > 0) {
-        throw new Error(`Invalid cours IDs: ${invalidCoursIds.join(", ")}`);
-      }
-    }),
 ];
 
 // Validate playlist update
@@ -71,22 +56,6 @@ exports.updatePlaylistValidator = [
   check("conservatoireName")
     .isLength({ max: 20 })
     .withMessage("Playlist conservatoireName should be at most 20 characters."),
-  check("courses")
-    .optional()
-    .isArray({ min: 1 })
-    .withMessage("At least one cours is required.")
-    .custom(async (cours) => {
-      const invalidCoursIds = [];
-      for (const coursId of cours) {
-        const cours = await Cours.findById(coursId);
-        if (!cours) {
-          invalidCoursIds.push(coursId);
-        }
-      }
-      if (invalidCoursIds.length > 0) {
-        throw new Error(`Invalid course IDs: ${invalidCoursIds.join(", ")}`);
-      }
-    }),
 ];
 
 // Validate playlist deletion

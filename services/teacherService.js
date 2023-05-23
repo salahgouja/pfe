@@ -89,6 +89,13 @@ exports.createTeacher = (req, res) => {
       });
   });
 };
+exports.getTeachersByConservatoire = asyncHandler(async (req, res) => {
+  const conservatoireId = req.params.conservatoireId;
+
+  const teachers = await Teacher.find({ conservatoire: conservatoireId });
+
+  res.status(200).json(teachers);
+});
 
 // Nested route
 // GET /api/v1/teachers/:teacherId/teacher

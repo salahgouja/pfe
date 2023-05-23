@@ -1,5 +1,6 @@
 const express = require("express");
 const authService = require("../services/authService");
+const playlistService = require("../services/playlistService");
 const {
   createPlaylistValidator,
   updatePlaylistValidator,
@@ -28,6 +29,10 @@ router
     createPlaylistValidator,
     createPlaylist
   );
+router.get(
+  "/conservatoireId/:conservatoireId",
+  playlistService.getPlaylistsByConservatoire
+);
 router
   .route("/:id")
   .get(getPlaylist)

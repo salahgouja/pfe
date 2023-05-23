@@ -6,11 +6,6 @@ const { v4: uuidv4 } = require("uuid");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 
 const User = require("../models/userModel");
-exports.setUserIdToBody = (req, res, next) => {
-  // Nested route
-  if (!req.body.user) req.body.user = req.params.userId;
-  next();
-};
 
 // Upload single image
 exports.uploadPlaylistImage = uploadSingleImage("image");
@@ -45,6 +40,14 @@ exports.getPlaylist = asyncHandler(async (req, res) => {
   }
   res.status(200).json(playlist);
 });
+exports.getPlaylistsByConservatoire = asyncHandler(async (req, res) => {
+  const conservatoireId = req.params.conservatoireId;
+
+  const playlists = await Playlist.find({ conservatoireName: conservatoireId });
+  console.log(playlists);
+
+  res.status(200).json(playlists);
+});
 
 exports.createPlaylist = asyncHandler(async (req, res) => {
   const {
@@ -55,7 +58,6 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
     description,
     teacherName,
     conservatoireName,
-    user,
   } = req.body;
 
   const playlistExists = await Playlist.findOne({ title });
@@ -71,26 +73,9 @@ exports.createPlaylist = asyncHandler(async (req, res) => {
     description,
     teacherName,
     conservatoireName,
-    user,
   });
 
-  try {
-    await User.findByIdAndUpdate(
-      user,
-      { $push: { playlist: playlist._id } },
-      { new: true, useFindAndModify: false }
-    );
-
-    await playlist.save();
-
-    res.status(201).json({
-      message: "Playlist added successfully",
-      data: playlist,
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Unable to update user" });
-  }
+  await playlist.save();
 
   res.status(201).json({ message: "Playlist created successfully", playlist });
 });

@@ -1,5 +1,6 @@
 const express = require("express");
 const authService = require("../services/authService");
+const teacherService = require("../services/teacherService");
 const {
   getTeacherValidator,
   createTeacherValidator,
@@ -25,6 +26,10 @@ router.route("/").get(getTeachers).post(
 
   createTeacherValidator,
   createTeacher
+);
+router.get(
+  "/ByConservatoireId/:conservatoireId",
+  teacherService.getTeachersByConservatoire
 );
 router
   .route("/:id")

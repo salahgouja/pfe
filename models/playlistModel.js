@@ -30,12 +30,8 @@ const playlistSchema = new mongoose.Schema(
       type: String,
     },
     conservatoireName: {
-      type: String,
-    },
-
-    user: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
+      ref: "Conservatoire",
       required: true,
     },
   },
