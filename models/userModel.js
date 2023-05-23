@@ -23,6 +23,13 @@ const userSchema = new mongoose.Schema(
     },
     image: String,
     phoneNumber: String,
+
+    playlist: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Playlist",
+      },
+    ],
     role: {
       type: String,
       enum: ["superadmin", "user", "conservatoire", "teacher"],

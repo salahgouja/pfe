@@ -22,7 +22,7 @@ router
   .get(getPlaylists)
   .post(
     authService.protect,
-    authService.allowedTo("teacher", "superadmin"),
+    authService.allowedTo("teacher", "conservatoire", "superadmin"),
     uploadPlaylistImage,
     resizeImage,
     createPlaylistValidator,
@@ -33,7 +33,7 @@ router
   .get(getPlaylist)
   .put(
     authService.protect,
-    authService.allowedTo("teacher", "superadmin"),
+    authService.allowedTo("teacher", "conservatoire", "superadmin"),
     uploadPlaylistImage,
     resizeImage,
     updatePlaylistValidator,

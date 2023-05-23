@@ -36,12 +36,12 @@ exports.createUserValidator = [
 
   check("role")
     .optional()
-    .isIn(["user", "conservatoire", "teacher"])
+    .isIn(["user", "conservatoire", "teacher", "superadmin"])
     .withMessage("Invalid role"),
-  check("image")
-    .optional()
-    .isArray()
-    .withMessage("image should be array of string"),
+  // check("image")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("image should be array of string"),
 
   validatorMiddleware,
 ];
@@ -65,6 +65,24 @@ exports.updateUserValidator = [
     .optional()
     .isIn(["superadmin", "user", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
+
+  check("playlist")
+    .isArray({ min: 1 })
+    .withMessage("At least one playliste is required.")
+    .custom(async (playlist) => {
+      const invalidPlaylistIds = [];
+      for (const playlistId of playlist) {
+        const playlist = await playlist.findById(playlistId);
+        if (!playlist) {
+          invalidPlaylistIds.push(playlistId);
+        }
+      }
+      if (invalidPlaylistIds.length > 0) {
+        throw new Error(
+          `Invalid playlist IDs: ${invalidPlaylistIds.join(", ")}`
+        );
+      }
+    }),
   validatorMiddleware,
 ];
 

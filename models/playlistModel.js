@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const playlistSchema = new mongoose.Schema(
   {
     title: {
@@ -32,6 +31,12 @@ const playlistSchema = new mongoose.Schema(
     },
     conservatoireName: {
       type: String,
+    },
+
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

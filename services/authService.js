@@ -111,34 +111,65 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // 3) Check if user exists
   const currentUser = await User.findById(decoded.userId);
+  console.log(currentUser);
+
   if (!currentUser) {
-    return next(
-      new ApiError(
-        "The user that belong to this token does no longer exist",
-        401
-      )
-    );
+    const currentTeacher = await Teacher.findById(decoded.teacherId);
+    if (currentTeacher) {
+      if (currentTeacher.passwordChangedAt) {
+        const passChangedTimestamp = parseInt(
+          currentTeacher.passwordChangedAt.getTime() / 1000,
+          10
+        );
+        if (passChangedTimestamp > decoded.iat) {
+          return next(
+            new ApiError(
+              "Teacher recently changed their password. Please login again.",
+              401
+            )
+          );
+        }
+      }
+      req.user = currentTeacher;
+      next();
+    } else {
+      const currentConservatoire = await Conservatoire.findById(
+        decoded.conservatoireId
+      );
+      if (currentConservatoire) {
+        // Conservatoire-specific logic
+        // ...
+        req.user = currentConservatoire;
+        next();
+      } else {
+        return next(
+          new ApiError(
+            "The user that belongs to this token does no longer exist",
+            401
+          )
+        );
+      }
+    }
+  } else {
+    if (currentUser.passwordChangedAt) {
+      const passChangedTimestamp = parseInt(
+        currentUser.passwordChangedAt.getTime() / 1000,
+        10
+      );
+      if (passChangedTimestamp > decoded.iat) {
+        return next(
+          new ApiError(
+            "The user that belongs to this token does no longer exist",
+            401
+          )
+        );
+      }
+    }
+    req.user = currentUser;
+    next();
   }
 
   // 4) Check if user change his password after token created
-  if (currentUser.passwordChangedAt) {
-    const passChangedTimestamp = parseInt(
-      currentUser.passwordChangedAt.getTime() / 1000,
-      10
-    );
-    // Password changed after token created (Error)
-    if (passChangedTimestamp > decoded.iat) {
-      return next(
-        new ApiError(
-          "User recently changed his password. please login again..",
-          401
-        )
-      );
-    }
-  }
-
-  req.user = currentUser;
-  next();
 });
 
 // @desc    Authorization (User Permissions)

@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+
+const Playlist = require("../models/playlistModel");
 const authService = require("../services/authService");
 
 const { validationResult } = require("express-validator");
@@ -28,6 +30,51 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 
   next();
 });
+
+exports.assignPlaylistToUser = asyncHandler(async (userId, playlistId) => {
+  // Find the user and playlist documents by their respective IDs
+  const user = await User.findById(userId);
+  const playlist = await Playlist.findById(playlistId);
+
+  // Check if the user and playlist exist
+  if (!user) {
+    throw new Error("User not found");
+  }
+  if (!playlist) {
+    throw new Error("Playlist not found");
+  }
+
+  // Assign the playlist to the user's playlist array
+  user.playlist.push(playlistId);
+
+  // Save the updated user document
+  await user.save();
+
+  return {
+    message: "Playlist assigned successfully",
+    data: user,
+  };
+});
+exports.getUserPlaylists = asyncHandler(async (userId) => {
+  try {
+    // Find the user by their ID and populate the 'playlist' field
+    const user = await User.findById(userId).populate("playlist");
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Extract the playlists from the user object
+    const playlists = user.playlist;
+    console.log("playlists", playlists);
+
+    return playlists;
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("Unable to retrieve user playlists");
+  }
+});
+
 // @desc    Get all users
 // @route   GET /api/users
 // @access  Private/user
@@ -54,8 +101,15 @@ exports.getUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 exports.createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, passwordConfirm, phoneNumber, role } =
-    req.body;
+  const {
+    name,
+    email,
+    password,
+    passwordConfirm,
+    phoneNumber,
+    playlist,
+    role,
+  } = req.body;
   let { image } = req.body;
 
   const errors = validationResult(req);
@@ -77,6 +131,7 @@ exports.createUser = asyncHandler(async (req, res) => {
     passwordConfirm,
     phoneNumber,
     image,
+    playlist,
     role,
   });
 
@@ -89,6 +144,7 @@ exports.createUser = asyncHandler(async (req, res) => {
       passwordConfirm: user.passwordConfirm,
       phoneNumber: user.phoneNumber,
       image: user.image,
+      playlist: user.playlist,
       role: user.role,
     });
   } else {
