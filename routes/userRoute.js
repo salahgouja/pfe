@@ -41,6 +41,7 @@ router.post("/:userId/playlists/:playlistId", async (req, res) => {
     res.status(500).json({ error: "Unable to assign playlist" });
   }
 });
+
 router.get(
   "/:userId/playlists",
   asyncHandler(async (req, res) => {

@@ -43,6 +43,10 @@ exports.assignPlaylistToUser = asyncHandler(async (userId, playlistId) => {
   if (!playlist) {
     throw new Error("Playlist not found");
   }
+  // Check if the playlist is already assigned to the user
+  if (user.playlist.includes(playlistId)) {
+    throw new Error("Playlist is already assigned to the user");
+  }
 
   // Assign the playlist to the user's playlist array
   user.playlist.push(playlistId);
@@ -66,9 +70,19 @@ exports.getUserPlaylists = asyncHandler(async (userId) => {
 
     // Extract the playlists from the user object
     const playlists = user.playlist;
-    console.log("playlists", playlists);
 
-    return playlists;
+    // Create a Set of distinct playlist IDs
+    const distinctPlaylistIds = new Set();
+    const distinctPlaylists = [];
+
+    for (const playlist of playlists) {
+      if (!distinctPlaylistIds.has(playlist._id.toString())) {
+        distinctPlaylistIds.add(playlist._id.toString());
+        distinctPlaylists.push(playlist);
+      }
+    }
+
+    return distinctPlaylists;
   } catch (error) {
     console.error("Error:", error);
     throw new Error("Unable to retrieve user playlists");
@@ -81,6 +95,28 @@ exports.getUserPlaylists = asyncHandler(async (userId) => {
 exports.getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
   res.status(200).json({ data: users });
+});
+exports.getUserPlaylistsById = asyncHandler(async (userId) => {
+  try {
+    // Find the user by their ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Populate the 'playlist' field of the user
+    await user.populate("playlist").execPopulate();
+
+    // Extract the playlists from the user object
+    const playlists = user.playlist;
+    console.log("playlists", playlists);
+
+    return playlists;
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("Unable to retrieve user playlists");
+  }
 });
 
 // @desc    Get user by ID
