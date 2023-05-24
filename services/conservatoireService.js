@@ -61,8 +61,15 @@ exports.getConservatoire = asyncHandler(async (req, res) => {
 //   }
 // });
 exports.createConservatoire = asyncHandler(async (req, res) => {
-  const { name, email, password, passwordConfirm, phoneNumber, role } =
-    req.body;
+  const {
+    name,
+    email,
+    password,
+    passwordConfirm,
+    phoneNumber,
+    adressconservatoire,
+    role,
+  } = req.body;
 
   const conservatoireExists = await Conservatoire.findOne({ email });
   if (conservatoireExists) {
@@ -76,6 +83,7 @@ exports.createConservatoire = asyncHandler(async (req, res) => {
     password,
     passwordConfirm,
     phoneNumber,
+    adressconservatoire,
     role,
   });
 

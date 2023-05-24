@@ -22,7 +22,6 @@ const teacherSchema = new mongoose.Schema(
     },
 
     phoneNumber: String,
-    adressteacher: String,
     image: String,
 
     conservatoire: {

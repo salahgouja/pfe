@@ -49,7 +49,7 @@ exports.createTeacher = (req, res) => {
     email,
     password,
     phoneNumber,
-    adressteacher,
+
     conservatoire,
     role,
   } = req.body;
@@ -62,7 +62,7 @@ exports.createTeacher = (req, res) => {
     email,
     password,
     phoneNumber,
-    adressteacher,
+
     conservatoire,
     role,
   });
@@ -136,16 +136,8 @@ exports.getTeacher = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.updateTeacher = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const {
-    name,
-    email,
-    password,
-    phoneNumber,
-    adressteacher,
-    image,
-    conservatoire,
-    role,
-  } = req.body;
+  const { name, email, password, phoneNumber, image, conservatoire, role } =
+    req.body;
 
   const teacher = await Teacher.findOneAndUpdate(
     { _id: id },
@@ -154,7 +146,6 @@ exports.updateTeacher = asyncHandler(async (req, res, next) => {
       email,
       password,
       phoneNumber,
-      adressteacher,
       image,
       conservatoire,
       role,
