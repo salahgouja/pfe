@@ -20,13 +20,17 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getTeachers).post(
-  authService.protect,
-  authService.allowedTo("conservatoire", "teacher", "superadmin"),
-
-  createTeacherValidator,
-  createTeacher
-);
+router
+  .route("/")
+  .get(getTeachers)
+  .post(
+    authService.protect,
+    authService.allowedTo("conservatoire", "teacher", "superadmin"),
+    uploadUserImage,
+    resizeImage,
+    createTeacherValidator,
+    createTeacher
+  );
 router.get(
   "/ByConservatoireId/:conservatoireId",
   teacherService.getTeachersByConservatoire

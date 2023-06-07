@@ -25,10 +25,6 @@ exports.createTeacherValidator = [
       return true;
     }),
 
-  check("passwordConfirm")
-    .notEmpty()
-    .withMessage("password confirmation required"),
-
   check("phoneNumber")
     .optional()
     .isMobilePhone("ar-TN")
@@ -38,10 +34,10 @@ exports.createTeacherValidator = [
     .optional()
     .isIn(["user", "conservatoire", "teacher"])
     .withMessage("Invalid role"),
-  check("image")
-    .optional()
-    .isArray()
-    .withMessage("image should be array of string"),
+  // check("image")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("image should be array of string"),
 
   validatorMiddleware,
 ];

@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const SuperAdmin = require("../models/userModel");
 const { validationResult } = require("express-validator");
 const ApiError = require("../utils/apiError");
+const jwt = require("jsonwebtoken");
+
 // @desc    Get all superAdmins
 // @route   GET /api/superAdmins
 // @access  Private/superAdmin

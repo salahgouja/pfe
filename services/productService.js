@@ -156,7 +156,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
   // res.status(200).json({ results: products.length, data: products });
 
   //build query
-  const apiFeatures = new ApiFeatures(Product.find(), req.query).search();
+  const apiFeatures = new ApiFeatures(Product.find(), req.query);
   //execute query
   const products = await apiFeatures.mongooseQuery;
   res.status(200).json(products);

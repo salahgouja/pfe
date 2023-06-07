@@ -9,6 +9,13 @@ const Playlist = require("../models/playlistModel");
 const Courses = require("../models/coursModel");
 const ApiFeatures = require("../utils/apiFeatures");
 
+exports.getCoursByPlaylist = asyncHandler(async (req, res) => {
+  const playlistId = req.params.playlistId;
+
+  const cours = await Cours.find({ playlist: playlistId });
+
+  res.status(200).json(cours);
+});
 // // Nested route
 // // GET /api/v1/playlists/:playlistId/Cours
 exports.createFilterObj = (req, res, next) => {
@@ -23,7 +30,7 @@ exports.createFilterObj = (req, res, next) => {
 // // @access  Public
 exports.getCourses = asyncHandler(async (req, res) => {
   //build query
-  const apiFeatures = new ApiFeatures(Courses.find(), req.query).search();
+  const apiFeatures = new ApiFeatures(Courses.find(), req.query);
   //execute query
   const courses = await apiFeatures.mongooseQuery;
   res.status(200).json({ results: courses, data: courses });

@@ -34,7 +34,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.getCategories = asyncHandler(async (req, res) => {
   //build query
-  const apiFeatures = new ApiFeatures(Category.find(), req.query).search();
+  const apiFeatures = new ApiFeatures(Category.find(), req.query);
   //execute query
   const categories = await apiFeatures.mongooseQuery;
   res.status(200).json(categories);

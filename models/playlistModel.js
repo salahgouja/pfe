@@ -32,7 +32,6 @@ const playlistSchema = new mongoose.Schema(
     conservatoireName: {
       type: mongoose.Schema.ObjectId,
       ref: "Conservatoire",
-      required: true,
     },
   },
   { timestamps: true }

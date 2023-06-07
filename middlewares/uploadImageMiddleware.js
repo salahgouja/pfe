@@ -2,9 +2,11 @@ const multer = require("multer");
 const ApiError = require("../utils/apiError");
 
 const multerOptions = () => {
+  console.log("inside upload images !");
   const multerStorage = multer.memoryStorage();
 
   const multerFilter = function (req, file, cb) {
+    console.log("this is file ==> ", file);
     if (file.mimetype.includes("image")) {
       cb(null, true);
     } else {

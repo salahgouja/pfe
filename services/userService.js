@@ -14,6 +14,8 @@ exports.uploadUserImage = uploadSingleImage("image");
 
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
+  console.log("inside resize image !");
+  console.log("");
   const filename = `user-${uuidv4()}-${Date.now()}.${req.file.originalname
     .split(".")
     .pop()}`;
@@ -137,54 +139,60 @@ exports.getUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 exports.createUser = asyncHandler(async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    passwordConfirm,
-    phoneNumber,
-    playlist,
-    role,
-  } = req.body;
-  let { image } = req.body;
+  try {
+    const {
+      name,
+      email,
+      password,
+      passwordConfirm,
+      phoneNumber,
+      playlist,
+      role,
+    } = req.body;
+    let { image } = req.body;
+    console.log(req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400);
+      throw new Error("Invalid user input");
+    }
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.status(400);
-    throw new Error("Invalid user input");
-  }
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      res.status(409);
+      throw new Error("User already exists");
+    }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    res.status(409);
-    throw new Error("User already exists");
-  }
-
-  const user = await User.create({
-    name,
-    email,
-    password,
-    passwordConfirm,
-    phoneNumber,
-    image,
-    playlist,
-    role,
-  });
-
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      passwordConfirm: user.passwordConfirm,
-      phoneNumber: user.phoneNumber,
-      image: user.image,
-      playlist: user.playlist,
-      role: user.role,
+    const user = await User.create({
+      name,
+      email,
+      password,
+      passwordConfirm,
+      phoneNumber,
+      image,
+      playlist,
+      role,
     });
-  } else {
-    res.status(400);
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        passwordConfirm: user.passwordConfirm,
+        phoneNumber: user.phoneNumber,
+        image: user.image,
+        playlist: user.playlist,
+        role: user.role,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(401);
     throw new Error("Invalid user data");
   }
 });

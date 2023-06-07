@@ -63,8 +63,8 @@ router
   .route("/:id")
   .get(getUserValidator, getUser)
   .put(
-    authService.protect,
-    authService.allowedTo("conservatoire", "teacher", "superadmin", "user"),
+    // authService.protect,
+    // authService.allowedTo("conservatoire", "teacher", "superadmin", "user"),
     uploadUserImage,
     resizeImage,
     updateUserValidator,

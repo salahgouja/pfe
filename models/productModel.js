@@ -63,6 +63,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    userId: String,
     etat: {
       type: String,
       enum: ["nouveau", "occasion"],

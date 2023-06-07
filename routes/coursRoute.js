@@ -1,6 +1,6 @@
 const express = require("express");
 const authService = require("../services/authService");
-
+const coursService = require("../services/coursService");
 const upload = require("../middlewares/upload");
 const {
   getCoursValidator,
@@ -43,4 +43,6 @@ router
     updateCours
   )
   .delete(deleteCoursValidator, deleteCours);
+
+router.get("/ByplaylistId/:playlistId", coursService.getCoursByPlaylist);
 module.exports = router;

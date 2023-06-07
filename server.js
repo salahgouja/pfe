@@ -29,6 +29,10 @@ const authRoute = require("./routes/authRoute");
 const contactusRoute = require("./routes/contactusRoute");
 
 const testRoute = require("./routes/testRoute");
+const test1Route = require("./routes/test1Route");
+
+const smsRoute = require("./routes/smsRoute");
+
 // Connect with db
 dbConnection();
 
@@ -73,7 +77,9 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/contactus", contactusRoute);
 
 app.use("/api/test", testRoute);
+app.use("/api/test1", test1Route);
 
+app.use("/api", smsRoute);
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find this route: ${req.originalUrl}`, 400));
 });

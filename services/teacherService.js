@@ -44,15 +44,8 @@ exports.setConservatoireIdToBody = (req, res, next) => {
 };
 
 exports.createTeacher = (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    phoneNumber,
-
-    conservatoire,
-    role,
-  } = req.body;
+  const { name, email, password, phoneNumber, image, conservatoire, role } =
+    req.body;
   // Check if the conservatoire value is a valid ObjectId
   if (!mongoose.Types.ObjectId.isValid(conservatoire)) {
     return res.status(400).json({ error: "Invalid conservatoire ID" });
@@ -62,7 +55,7 @@ exports.createTeacher = (req, res) => {
     email,
     password,
     phoneNumber,
-
+    image,
     conservatoire,
     role,
   });

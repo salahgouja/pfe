@@ -15,16 +15,6 @@ exports.createPlaylistValidator = [
     .withMessage("Playlist description is required.")
     .isLength({ max: 1000 })
     .withMessage("Playlist description should be at most 1000 characters."),
-  check("image")
-    .optional()
-    .isArray()
-    .withMessage("image should be array of string"),
-  check("teacherName")
-    .isLength({ max: 20 })
-    .withMessage("Playlist teacherName should be at most 20 characters."),
-  check("conservatoireName")
-    .isLength({ max: 20 })
-    .withMessage("Playlist conservatoireName should be at most 20 characters."),
 ];
 
 // Validate playlist update
